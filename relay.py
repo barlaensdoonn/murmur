@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur
 # 11/27/17
-# updated: 11/27/17
+# updated: 12/7/17
 
 '''
 raspi connections to Sainsmart 4-channel 5V relay board:
@@ -19,25 +19,17 @@ import time
 import gpiozero
 
 
-def initialize_relay():
-    relay_pin = 4
-    # active_high = False to initialize Sainsmart 4-channel relay board as off
-    relay = gpiozero.OutputDevice(relay_pin, active_high = False)
+def initialize_pin(pin):
+    '''active_high = False initializes Sainsmart 4-channel relay board as off'''
 
-    return relay
-
-
-def on():
-    relay.on()
-
-
-def off():
-    relay.off()
+    return gpiozero.OutputDevice(pin, active_high = False)
 
 
 if __name__ == '__main__':
-    relay = initialize_relay()
+    pins = [4, 5, 6]  # list to store GPIO pins being used
+    relays = [initialize_pin(pin) for pin in pins]  # list to store initialized GPIO pins for controlling relays
 
-    relay.on()
-    time.sleep(2)
-    relay.off()
+    for relay in relays:
+        relay.on()
+        time.sleep(2)
+        relay.off()
