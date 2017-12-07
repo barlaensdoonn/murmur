@@ -33,7 +33,7 @@ def initialize_relays(pins):
 
 if __name__ == '__main__':
     pins = [4, 5, 6]  # GPIO pins being used
-    relays = intialize_relays(pins)
+    relays = initialize_relays(pins)
 
     for relay in relays:
         relay.on()
