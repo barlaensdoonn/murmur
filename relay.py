@@ -35,9 +35,9 @@ def test_connections(relays):
     '''loop through relays list turning each one on for 1 second'''
 
     for relay in relays:
-        relay.on()
+        relay.toggle()
         time.sleep(1)
-        relay.off()
+        relay.toggle()
 
 
 if __name__ == '__main__':
