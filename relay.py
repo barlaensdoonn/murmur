@@ -31,11 +31,17 @@ def initialize_relays(pins):
     return [_initialize_pin(pin) for pin in pins]
 
 
-if __name__ == '__main__':
-    pins = [4, 5, 6]  # GPIO pins being used
-    relays = initialize_relays(pins)
+def test_connections(relays):
+    '''loop through relays list turning each one on for 1 second'''
 
     for relay in relays:
         relay.on()
         time.sleep(1)
         relay.off()
+
+
+if __name__ == '__main__':
+    pins = [4, 5, 6]  # GPIO pins being used
+    relays = initialize_relays(pins)
+
+    test_connections(relays)
