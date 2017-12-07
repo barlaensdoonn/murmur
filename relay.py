@@ -22,7 +22,7 @@ import gpiozero
 def initialize_pin(pin):
     '''active_high = False initializes Sainsmart 4-channel relay board as off'''
 
-    return gpiozero.OutputDevice(pin, active_high = False)
+    return gpiozero.OutputDevice(pin, active_high=False)
 
 
 if __name__ == '__main__':
