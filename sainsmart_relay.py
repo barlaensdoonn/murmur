@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# murmur -
+# murmur - sainsmart 4-channel relay board test
 # 12/7/17
 # updated: 12/8/17
 
