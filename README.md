@@ -1,6 +1,6 @@
-#murmur
+# murmur
 
-##dependencies
+## dependencies
 #### *gpiozero*
 ```
 sudo apt-get install python3-gpiozero
