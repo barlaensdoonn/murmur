@@ -33,6 +33,8 @@ class Relay(gpiozero.OutputDevice):
         to use our own init in the Relay class, we must explicitly call
         the base class's __init__, otherwise it will be overridden
         more here: https://stackoverflow.com/questions/6396452/python-derived-class-and-base-class-attributes#6396839
+
+        active_high=False initializes the relays on the Sainsmart board as off
         '''
         gpiozero.OutputDevice.__init__(self, pin, active_high=False, *args, **kwargs)
 
