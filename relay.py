@@ -44,7 +44,7 @@ class Relay(gpiozero.OutputDevice):
 
 if __name__ == '__main__':
     pins = [4, 5, 6]  # list to store GPIO pins being used
-    relays = [Relay(pin) for relay in relays]  # list to hold Relay objects
+    relays = [Relay(pin) for pin in pins]  # list to hold Relay objects
 
     # loop through the relays, turning them on for 1 second
     for relay in relays:
