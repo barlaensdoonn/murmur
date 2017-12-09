@@ -1,6 +1,6 @@
 #!/usr/bin/python3
-# murmur
-# 11/27/17
+# murmur - single relay class
+# 12/7/17
 # updated: 12/7/17
 
 '''
@@ -19,29 +19,24 @@ import time
 import gpiozero
 
 
-def _initialize_pin(pin):
-    '''active_high = False initializes Sainsmart 4-channel relay board as off'''
+class Relay(object):
 
-    return gpiozero.OutputDevice(pin, active_high=False)
+    def __init__(self, pin):
+        self.pin = pin
+        self.relay = self._initialize_relay()
 
+    def _initialize_relay(self):
+        '''active_high = False initializes Sainsmart 4-channel relay board as off'''
 
-def initialize_relays(pins):
-    '''returns list of gpiozero.OutputDevice objects'''
+        return gpiozero.OutputDevice(self.pin, active_high=False)
 
-    return [_initialize_pin(pin) for pin in pins]
-
-
-def test_connections(relays):
-    '''loop through relays list turning each one on for 1 second'''
-
-    for relay in relays:
-        relay.toggle()
+    def test_connection(self):
+        self.relay.toggle()
         time.sleep(1)
-        relay.toggle()
+        self.relay.toggle()
 
 
 if __name__ == '__main__':
-    pins = [4, 5, 6]  # GPIO pins being used
-    relays = initialize_relays(pins)
-
-    test_connections(relays)
+    pin = 4
+    relay = Relay(pin)
+    relay.test_connection()
