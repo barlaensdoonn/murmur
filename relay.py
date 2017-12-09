@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# murmur - single relay class
+# murmur -
 # 12/7/17
 # updated: 12/8/17
 
@@ -43,6 +43,9 @@ class Relay(gpiozero.OutputDevice):
 
 
 if __name__ == '__main__':
-    pin = 4
-    relay = Relay(pin)
-    relay.test_connection()
+    pins = [4, 5, 6]  # list to store GPIO pins being used
+    relays = [Relay(pin) for relay in relays]  # list to hold Relay objects
+
+    # loop through the relays, turning them on for 1 second
+    for relay in relays:
+        relay.test_connection()
