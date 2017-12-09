@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - sainsmart 4-channel relay board test
 # 12/7/17
-# updated: 12/8/17
+# updated: 12/9/17
 
 '''
 raspi connections to Sainsmart 4-channel 5V relay board:
@@ -12,7 +12,7 @@ raspi connections to Sainsmart 4-channel 5V relay board:
 
 power supply connections to relay terminals:
     +V power supply -> +V power input
-    GND power supply -> NO relay terminal -> GND power input
+    GND power supply -> NO relay terminal (far left when facing the relay terminals) -> GND power input
 '''
 
 import time
@@ -39,14 +39,21 @@ class Relay(gpiozero.OutputDevice):
         gpiozero.OutputDevice.__init__(self, pin, active_high=False, *args, **kwargs)
 
     def test_connection(self):
+        '''
+        test the pi's ability to control a relay
+        do this BEFORE hooking up anything to the relay and watch LED on the relay board
+        '''
         self.toggle()
         time.sleep(1)
         self.toggle()
 
 
 if __name__ == '__main__':
-    pins = [4, 5, 6, 13]  # list to store GPIO pins being used
-    relays = [Relay(pin) for pin in pins]  # list to hold Relay objects
+    # list to store GPIO pins being used
+    # find GPIO pin mappings here:
+    # https://gpiozero.readthedocs.io/en/stable/recipes.html#pin-numbering
+    pins = [4, 5, 6, 13]
+    relays = [Relay(pin) for pin in pins]  # list to hold initialized Relay objects
 
     # loop through the relays, turning them on for 1 second
     for relay in relays:
