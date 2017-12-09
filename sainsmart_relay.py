@@ -49,10 +49,10 @@ class Relay(gpiozero.OutputDevice):
 
 
 if __name__ == '__main__':
-    # list to store GPIO pins being used
     # find GPIO pin mappings here:
     # https://gpiozero.readthedocs.io/en/stable/recipes.html#pin-numbering
-    pins = [4, 5, 6, 13]
+
+    pins = [4, 5, 6, 13]  # list to store GPIO pins being used
     relays = [Relay(pin) for pin in pins]  # list to hold initialized Relay objects
 
     # loop through the relays, turning them on for 1 second
