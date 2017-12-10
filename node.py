@@ -8,5 +8,11 @@ from arm import Arm
 
 class Node(object):
 
+    pin_groupings = {
+        'left_arm': [17, 27, 22],
+        'middle_arm': [5, 6, 13],
+        'right_arm': [6, 20, 21]
+    }
+
     def __init__(self):
         pass
