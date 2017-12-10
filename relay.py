@@ -16,15 +16,21 @@ class Relay(gpiozero.OutputDevice):
     documentation here: https://gpiozero.readthedocs.io/en/stable/api_output.html#outputdevice
     '''
 
-    def __init__(self, pin, *args, **kwargs):
+    def __init__(self, pin, board_type='denkovi', *args, **kwargs):
         '''
         to use our own init in the Relay class, we must explicitly call
         the base class's __init__, otherwise it will be overridden
         more here: https://stackoverflow.com/questions/6396452/python-derived-class-and-base-class-attributes#6396839
 
-        active_high=False initializes the relays on the Sainsmart board as off
+        active_high=False initializes the Sainsmart relays as off
         '''
+
+        self.board_type = board_type.lower()
+        self.active_high = self._set_active_high()
         gpiozero.OutputDevice.__init__(self, pin, active_high=False, *args, **kwargs)
+
+    def _set_active_high(self):
+        return False if self.board_type == 'sainsmart' else return True
 
     def test_connection(self):
         '''
