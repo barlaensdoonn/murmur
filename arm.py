@@ -19,14 +19,15 @@ class Arm(object):
 
     actuators = ['lower', 'middle', 'upper']
 
-    def __init__(self, pins):
-        self.relays = _initialize_relays(pins)
+    def __init__(self, pins, **kwargs):
+        '''we accept **kwargs here to pass in board_type if needed'''
+        self.relays = self._initialize_relays(pins, **kwargs)
 
-    def _initialize_relays(self, pins):
-        relays = [Relay(pin) for pin in pins]
+    def _initialize_relays(self, pins, **kwargs):
+        relays = [Relay(pin, **kwargs) for pin in pins]
 
-        return dict(zip(actuators, relays))
+        return dict(zip(self.actuators, relays))
 
     def test_connections(self):
-        for actuator in actuators:
+        for actuator in self.actuators:
             self.relays[actuator].test_connection()
