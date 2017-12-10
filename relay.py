@@ -1,19 +1,7 @@
 #!/usr/bin/python3
-# murmur - sainsmart 4-channel relay board test
+# murmur - 4-channel relay board
 # 12/7/17
 # updated: 12/9/17
-
-'''
-raspi connections to Sainsmart 4-channel 5V relay board:
-    3.3V -> VCC
-    5V -> JD-VCC
-    GND -> GND
-    GPIO -> IN*
-
-power supply connections to relay terminals:
-    +V power supply -> +V power input
-    GND power supply -> NO relay terminal (far left when facing the relay terminals) -> GND power input
-'''
 
 import time
 import gpiozero
