@@ -18,7 +18,7 @@ class Relay(gpiozero.OutputDevice):
 
     def __init__(self, pin, board_type='denkovi', *args, **kwargs):
         '''
-        to use our own init in the Relay class, we must explicitly call
+        to use our own __init__ in the Relay class, we must explicitly call
         the base class's __init__, otherwise it will be overridden
         more here: https://stackoverflow.com/questions/6396452/python-derived-class-and-base-class-attributes#6396839
 
@@ -27,10 +27,10 @@ class Relay(gpiozero.OutputDevice):
 
         self.board_type = board_type.lower()
         self.active_high = self._set_active_high()
-        gpiozero.OutputDevice.__init__(self, pin, active_high=False, *args, **kwargs)
+        gpiozero.OutputDevice.__init__(self, pin, active_high=self.active_high, *args, **kwargs)
 
     def _set_active_high(self):
-        return False if self.board_type == 'sainsmart' else return True
+        return False if self.board_type == 'sainsmart' else True
 
     def test_connection(self):
         '''
