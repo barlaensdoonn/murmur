@@ -21,7 +21,11 @@ class Arm(object):
     actuators = ['lower', 'middle', 'upper']
 
     def __init__(self, pins, **kwargs):
-        '''we accept **kwargs here to pass in board_type if needed'''
+        '''
+        we accept **kwargs here to pass in board_type if needed. also pins should be
+        a list of 3 ints corresponding to GPIO pins to assign to the arm's relays
+        '''
+
         self.relays = self._initialize_relays(pins, **kwargs)
 
     def _initialize_relays(self, pins, **kwargs):
