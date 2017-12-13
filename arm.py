@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 12/9/17
+# updated: 12/13/17
 
 from relay import Relay
 
 
 class Arm(object):
     '''
-    Arm.relays dictionary format:
+    Arm.relays dictionary returned from _initialize_relays() is formatted as follows,
+    where Relay(pins[i]) represents an initiated relay object:
 
     self.relays = {
         'lower': Relay(pins[0]),
