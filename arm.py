@@ -39,7 +39,7 @@ class Arm(object):
         self.relays = self._initialize_relays(pins, **kwargs)
 
     def _initialize_ratio(self):
-
+        pass
 
     def _initialize_relays(self, pins, **kwargs):
         relays = [Relay(pin, **kwargs) for pin in pins]
