@@ -4,7 +4,7 @@
 # updated: 12/24/17
 
 from datetime import timedelta
-from relay import Relay
+from relay import relay  # nested relay repo from here: https://github.com/barlaensdoonn/relay
 
 
 class Arm(object):
@@ -42,7 +42,7 @@ class Arm(object):
         pass
 
     def _initialize_relays(self, pins, **kwargs):
-        relays = [Relay(pin, **kwargs) for pin in pins]
+        relays = [relay.Relay(pin, **kwargs) for pin in pins]
 
         return dict(zip(self.actuators, relays))
 
