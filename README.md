@@ -7,6 +7,13 @@ sudo apt-get update
 sudo apt-get install python3-gpiozero
 ```
 
+#### *relay repo nested inside this repository*
+[link to the repo](https://github.com/barlaensdoonn/relay)
+```
+cd ~/gitbucket/murmur
+git clone https://github.com/barlaensdoonn/relay.git
+```
+
 ## connections
 #### *sainsmart 5V 4-channel relay board*
 [link to the board](https://www.sainsmart.com/products/4-channel-5v-relay-module?nosto=customers-also-bought)
