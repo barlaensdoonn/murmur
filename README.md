@@ -15,16 +15,15 @@ git clone https://github.com/barlaensdoonn/relay.git
 ```
 
 ## connections
-#### *sainsmart 5V 4-channel relay board*
-[link to the board](https://www.sainsmart.com/products/4-channel-5v-relay-module?nosto=customers-also-bought)
+#### *denkovi 5V 4-channel relay board*
+[link to the board](http://denkovi.com/relay-module-5v-4-channels-for-raspberry-pi-arduino-pic-avr)
 ```
 raspi connections to relay board:
-    3.3V -> VCC
-    5V -> JD-VCC
+    5V -> VCC
     GND -> GND
     GPIO -> IN*
 
 power supply connections to relay terminals:
-    +V power supply -> +V power input
-    GND power supply -> NO relay terminal (far left when facing the relay terminals) -> GND power input
+    +V 24V power supply -> +V actuator power input
+    GND 24V power supply -> NC relay terminal -> GND actuator power input
 ```
