@@ -10,7 +10,7 @@ class Node(object):
 
     pin_groupings = {
         'left_arm': [4, 17, 27, 22],
-        'middle_arm': [5, 6, 13, 19],
+        'middle_arm': [6, 13, 19, 26],
         'right_arm': [12, 16, 20, 21]
     }
 
