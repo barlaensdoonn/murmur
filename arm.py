@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 12/24/17
+# updated: 1/9/17
 
-import os
 import socket
 from datetime import timedelta
 from relay import relay  # nested relay repo from here: https://github.com/barlaensdoonn/relay
