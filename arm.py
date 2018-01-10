@@ -3,6 +3,8 @@
 # 12/9/17
 # updated: 12/24/17
 
+import os
+import socket
 from datetime import timedelta
 from relay import relay  # nested relay repo from here: https://github.com/barlaensdoonn/relay
 
@@ -37,6 +39,18 @@ class Arm(object):
         '''
 
         self.relays = self._initialize_relays(pins, **kwargs)
+
+    def _get_logfile_name(self):
+        return '{dir}/{hostname}.log'.format(dir='logs', hostname=socket.gethostname().split('.')[0])
+
+    def _initialize_logger(self):
+        with open('log.yaml', 'r') as log_conf:
+            log_config = yaml.safe_load(log_conf)
+
+        log_config['handlers']['file']['filename'] = _get_logfile_name()
+        logging.config.dictConfig(log_config)
+        self.logger = logging.getLogger('arm')
+        self.logger.info('arm logger instantiated')
 
     def _initialize_ratio(self):
         pass
