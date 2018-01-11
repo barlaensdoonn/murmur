@@ -19,7 +19,7 @@ class Node(object):
         '''we accept **kwargs here to pass in board_type if needed.'''
 
         self.hostname = self._get_hostname()
-        self.arms = {key: Arm(self.pin_groupings[key], **kwargs) for key in self.pin_groupings.keys()}
+        self.arms = {key: Arm(self.pin_groupings[key], self.hostname, **kwargs) for key in self.pin_groupings.keys()}
 
     def _get_hostname(self):
         return socket.gethostname().split('.')[0]
