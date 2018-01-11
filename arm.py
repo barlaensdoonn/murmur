@@ -67,7 +67,7 @@ class Arm(object):
         return dict(zip(self.actuators, relays))
 
     def test_connections(self):
-        '''this is a utility method to be used for debugging'''
+        '''utility method for debugging'''
 
         for actuator in self.actuators:
             self.relays[actuator].test_connection()

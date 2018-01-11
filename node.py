@@ -3,6 +3,7 @@
 # 12/9/17
 # updated: 1/10/17
 
+import time
 import yaml
 import socket
 import logging
@@ -66,3 +67,10 @@ class Node(object):
             arm_dict[arm] = Arm(arm, self.hostname, pins, **kwargs)
 
         return arm_dict
+
+    def test_connections(self):
+        '''utility method for debugging'''
+
+        for arm in self.arms:
+            arm.test_connections()
+            time.sleep(1)
