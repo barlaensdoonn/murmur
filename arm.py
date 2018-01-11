@@ -4,7 +4,6 @@
 # updated: 1/10/17
 
 import yaml
-import socket
 import logging
 import logging.config
 from datetime import timedelta
