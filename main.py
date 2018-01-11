@@ -19,7 +19,14 @@ def _get_logfile_name():
     return '{dir}/{hostname}.log'.format(dir='logs', hostname=_get_hostname())
 
 
-if __name__ == '__main__':
+def _initialize_logger():
+    logger = logging.getLogger('main')
+    logger.info('main logger instantiated')
+
+    return logger
+
+
+def configure_logger():
     with open('log.yaml', 'r') as log_conf:
         log_config = yaml.safe_load(log_conf)
 
@@ -27,3 +34,9 @@ if __name__ == '__main__':
     logging.config.dictConfig(log_config)
     logging.info('* * * * * * * * * * * * * * * * * * * *')
     logging.info('logging configured')
+
+    return _initialize_logger()
+
+
+if __name__ == '__main__':
+    logger = configure_logger()
