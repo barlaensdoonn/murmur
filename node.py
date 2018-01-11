@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/10/17
+# updated: 1/10/18
 
 import time
 import yaml

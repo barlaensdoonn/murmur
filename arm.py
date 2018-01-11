@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 1/10/17
+# updated: 1/10/18
 
 import yaml
 import logging
