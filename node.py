@@ -50,10 +50,19 @@ class Node(object):
         log_config['handlers']['file']['filename'] = self._get_logfile_name()
         logging.config.dictConfig(log_config)
         self.logger = logging.getLogger('node')
-        self.logger.info('arm logger instantiated')
+        self.logger.info('node logger instantiated')
 
     def _initialize_arms(self, **kwargs):
+        '''
+        the for loop and return statement can be replaced with this more unreadable one-liner:
+        return {arm: Arm(pins, self.hostname, **kwargs) for arm, pins in zip(arms, self.pin_groups)}
+        '''
+
+        arm_dict = {}
         arms = self.host_arm_map[self.hostname]
         self.logger.info('initializing arms {}, {}, and {}'.format(*arms))
 
-        return {group[0]: Arm(group[1], self.hostname, **kwargs) for group in zip(arms, self.pin_groups)}
+        for arm, pins in zip(arms, self.pin_groups):
+            arm_dict[arm] = Arm(arm, self.hostname, pins, **kwargs)
+
+        return arm_dict

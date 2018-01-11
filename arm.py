@@ -34,12 +34,13 @@ class Arm(object):
     ratio_total = sum(ratio)
     seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
-    def __init__(self, pins, hostname, **kwargs):
+    def __init__(self, arm, hostname, pins, **kwargs):
         '''
         we accept **kwargs here to pass in board_type if needed.
         pins should be a list of ints corresponding to GPIO pins to control relays
         '''
 
+        self.arm = arm
         self.hostname = hostname
         self._initialize_logger()
         self.relays = self._initialize_relays(pins, **kwargs)
@@ -54,7 +55,7 @@ class Arm(object):
         log_config['handlers']['file']['filename'] = self._get_logfile_name()
         logging.config.dictConfig(log_config)
         self.logger = logging.getLogger('arm')
-        self.logger.info('arm logger instantiated')
+        self.logger.info('arm {} logger instantiated'.format(self.arm))
 
     def _initialize_ratio(self):
         pass
@@ -66,6 +67,8 @@ class Arm(object):
         return dict(zip(self.actuators, relays))
 
     def test_connections(self):
+        '''this is a utility method to be used for debugging'''
+
         for actuator in self.actuators:
             self.relays[actuator].test_connection()
 
