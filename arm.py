@@ -43,7 +43,7 @@ class Arm(object):
         self.relays = self._initialize_relays(pins, **kwargs)
 
     def _initialize_logger(self):
-        logger = logging.getLogger('arm')
+        logger = logging.getLogger(self.arm)
         logger.info('arm {} logger instantiated'.format(self.arm))
 
         return logger

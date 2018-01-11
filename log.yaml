@@ -25,15 +25,55 @@ loggers:
         level: INFO
         handlers: [file]
         propogate: False
-    arm:
-        level: INFO
-        handlers: [file]
-        propogate: False
     node:
         level: INFO
         handlers: [file]
         propogate: False
     main:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    A:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    B:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    C:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    D:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    E:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    F:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    G:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    H:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    J:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    K:
+        level: INFO
+        handlers: [file]
+        propogate: False
+    L:
         level: INFO
         handlers: [file]
         propogate: False
