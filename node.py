@@ -55,6 +55,6 @@ class Node(object):
     def _initialize_arms(self, **kwargs):
         arms = self.host_arm_map[self.hostname]
         arm_zip = zip(arms, self.pin_groups)
-        self.logger.info('initializing arms {}, {}, and {} on host {}'.format(arms[0], arms[1], arms[2], self.hostname))
+        self.logger.info('initializing arms {}, {}, and {}'.format(arms[0], arms[1], arms[2]))
 
         return {group[0]: Arm(group[1], self.hostname, **kwargs) for group in arm_zip}
