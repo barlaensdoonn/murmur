@@ -12,72 +12,72 @@ formatters:
 handlers:
     console:
         class: logging.StreamHandler
-        level: INFO
+        level: DEBUG
         formatter: console
         stream: ext://sys.stdout
     file:
         class: logging.FileHandler
-        level: INFO
+        level: DEBUG
         formatter: file
 
 loggers:
     relay:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     node:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     main:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     A:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     B:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     C:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     D:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     E:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     F:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     G:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     H:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     J:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     K:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     L:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
 
 root:
-    level: INFO
+    level: DEBUG
     handlers: [console, file]
