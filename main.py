@@ -7,6 +7,7 @@ import yaml
 import socket
 import logging
 import logging.config
+from node import Node
 
 
 def _get_hostname():
@@ -40,3 +41,5 @@ def configure_logger():
 
 if __name__ == '__main__':
     logger = configure_logger()
+    node = Node()
+    node.test_connections()
