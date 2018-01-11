@@ -9,7 +9,7 @@ import logging
 import logging.config
 
 
-def _get_hostname(self):
+def _get_hostname():
     return socket.gethostname().split('.')[0]
 
 
