@@ -53,6 +53,8 @@ class Node(object):
         self.logger.info('arm logger instantiated')
 
     def _initialize_arms(self, **kwargs):
-        arm_zip = zip(self.host_arm_map[self.hostname], self.pin_groups)
+        arms = self.host_arm_map[self.hostname]
+        arm_zip = zip(arms, self.pin_groups)
+        self.logger.info('initializing arms {}, {}, and {} on host {}'.format(arms[0], arms[1], arms[2], self.hostname))
 
         return {group[0]: Arm(group[1], self.hostname, **kwargs) for group in arm_zip}
