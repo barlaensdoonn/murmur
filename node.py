@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/8/17
+# updated: 1/10/17
 
+import socket
 from arm import Arm
 
 
@@ -17,4 +18,8 @@ class Node(object):
     def __init__(self, **kwargs):
         '''we accept **kwargs here to pass in board_type if needed.'''
 
+        self.hostname = self._get_hostname()
         self.arms = {key: Arm(self.pin_groupings[key], **kwargs) for key in self.pin_groupings.keys()}
+
+    def _get_hostname(self):
+        return socket.gethostname().split('.')[0]
