@@ -1,13 +1,10 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/10/18
+# updated: 1/11/18
 
 import time
-import yaml
-import socket
 import logging
-import logging.config
 from arm import Arm
 
 
@@ -39,18 +36,7 @@ class Node(object):
         self.logger = self._initialize_logger()
         self.arms = self._initialize_arms(**kwargs)
 
-    def _get_hostname(self):
-        return socket.gethostname().split('.')[0]
-
-    def _get_logfile_name(self):
-        return '{dir}/{hostname}.log'.format(dir='logs', hostname=self.hostname)
-
     def _initialize_logger(self):
-        with open('log.yaml', 'r') as log_conf:
-            log_config = yaml.safe_load(log_conf)
-
-        log_config['handlers']['file']['filename'] = self._get_logfile_name()
-        logging.config.dictConfig(log_config)
         logger = logging.getLogger('node')
         logger.info('node logger instantiated')
 
@@ -67,7 +53,7 @@ class Node(object):
         self.logger.info('initializing arms {}, {}, and {}'.format(*arms))
 
         for arm, pins in zip(arms, self.pin_groups):
-            arm_dict[arm] = Arm(arm, self.hostname, pins, **kwargs)
+            arm_dict[arm] = Arm(arm, pins, **kwargs)
 
         return arm_dict
 
