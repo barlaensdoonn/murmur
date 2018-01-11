@@ -61,7 +61,7 @@ class Arm(object):
         '''utility method for debugging'''
 
         for actuator in self.actuators:
-            self.logger.debug('testing {actuator} relay connection on GPIO pin {pin}'.format(actuator=actuator, pin=self.relays[actuator].pin))
+            self.logger.debug('testing {actuator} relay connection on pin {pin}'.format(actuator=actuator, pin=self.relays[actuator].pin))
             self.relays[actuator].test_connection()
 
     def run_forward(self):

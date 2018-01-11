@@ -10,10 +10,10 @@ import logging.config
 from node import Node
 
 
-def _get_logfile_name():
+def _get_logfile_name(hostname):
     '''format log file as "hostname.log"'''
 
-    return '{dir}/{hostname}.log'.format(dir='logs', hostname=_get_hostname())
+    return '{dir}/{hostname}.log'.format(dir='logs', hostname=hostname)
 
 
 def _initialize_logger():
@@ -31,7 +31,7 @@ def configure_logger(hostname):
     with open('log.yaml', 'r') as log_conf:
         log_config = yaml.safe_load(log_conf)
 
-    log_config['handlers']['file']['filename'] = _get_logfile_name()
+    log_config['handlers']['file']['filename'] = _get_logfile_name(hostname)
     logging.config.dictConfig(log_config)
     logging.info('* * * * * * * * * * * * * * * * * * * *')
     logging.info('logging configured')
