@@ -3,7 +3,10 @@
 # 12/9/17
 # updated: 1/10/17
 
+import yaml
 import socket
+import logging
+import logging.config
 from arm import Arm
 
 
@@ -36,6 +39,18 @@ class Node(object):
 
     def _get_hostname(self):
         return socket.gethostname().split('.')[0]
+
+    def _get_logfile_name(self):
+        return '{dir}/{hostname}.log'.format(dir='logs', hostname=self.hostname)
+
+    def _initialize_logger(self):
+        with open('log.yaml', 'r') as log_conf:
+            log_config = yaml.safe_load(log_conf)
+
+        log_config['handlers']['file']['filename'] = self._get_logfile_name()
+        logging.config.dictConfig(log_config)
+        self.logger = logging.getLogger('arm')
+        self.logger.info('arm logger instantiated')
 
     def _initialize_arms(self, **kwargs):
         arm_zip = zip(self.host_arm_map[self.hostname], self.pin_groups)
