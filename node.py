@@ -49,12 +49,11 @@ class Node(object):
 
         log_config['handlers']['file']['filename'] = self._get_logfile_name()
         logging.config.dictConfig(log_config)
-        self.logger = logging.getLogger('arm')
+        self.logger = logging.getLogger('node')
         self.logger.info('arm logger instantiated')
 
     def _initialize_arms(self, **kwargs):
         arms = self.host_arm_map[self.hostname]
-        arm_zip = zip(arms, self.pin_groups)
         self.logger.info('initializing arms {}, {}, and {}'.format(*arms))
 
-        return {group[0]: Arm(group[1], self.hostname, **kwargs) for group in arm_zip}
+        return {group[0]: Arm(group[1], self.hostname, **kwargs) for group in zip(arms, self.pin_groups)}
