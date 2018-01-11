@@ -29,9 +29,10 @@ class Node(object):
 
     pin_groups = [[4, 17, 27, 22], [6, 13, 19, 26], [12, 16, 20, 21]]
 
-    def __init__(self, **kwargs):
+    def __init__(self, hostname, **kwargs):
         '''we accept **kwargs here to pass in board_type if needed.'''
 
+        self.hostname = hostname
         self.logger = self._initialize_logger()
         self.arms = self._initialize_arms(**kwargs)
 

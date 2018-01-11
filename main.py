@@ -10,10 +10,6 @@ import logging.config
 from node import Node
 
 
-def _get_hostname():
-    return socket.gethostname().split('.')[0]
-
-
 def _get_logfile_name():
     '''format log file as "hostname.log"'''
 
@@ -27,7 +23,11 @@ def _initialize_logger():
     return logger
 
 
-def configure_logger():
+def get_hostname():
+    return socket.gethostname().split('.')[0]
+
+
+def configure_logger(hostname):
     with open('log.yaml', 'r') as log_conf:
         log_config = yaml.safe_load(log_conf)
 
@@ -40,6 +40,7 @@ def configure_logger():
 
 
 if __name__ == '__main__':
-    logger = configure_logger()
-    node = Node()
+    hostname = get_hostname()
+    logger = configure_logger(hostname)
+    node = Node(hostname)
     node.test_connections()
