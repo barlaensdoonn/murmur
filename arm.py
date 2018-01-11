@@ -60,6 +60,7 @@ class Arm(object):
         pass
 
     def _initialize_relays(self, pins, **kwargs):
+        self.logger.info('initializing relays on GPIO pins {}, {}, {}, {}'.format(*pins))
         relays = [relay.Relay(pin, **kwargs) for pin in pins]
 
         return dict(zip(self.actuators, relays))
