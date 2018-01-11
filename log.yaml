@@ -21,6 +21,10 @@ handlers:
         formatter: file
 
 loggers:
+    relay:
+        level: INFO
+        handlers: [file]
+        propogate: False
     arm:
         level: INFO
         handlers: [file]

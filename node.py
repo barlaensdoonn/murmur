@@ -36,6 +36,7 @@ class Node(object):
         '''we accept **kwargs here to pass in board_type if needed.'''
 
         self.hostname = self._get_hostname()
+        self.logger = self._initialize_logger()
         self.arms = self._initialize_arms(**kwargs)
 
     def _get_hostname(self):
@@ -50,8 +51,10 @@ class Node(object):
 
         log_config['handlers']['file']['filename'] = self._get_logfile_name()
         logging.config.dictConfig(log_config)
-        self.logger = logging.getLogger('node')
-        self.logger.info('node logger instantiated')
+        logger = logging.getLogger('node')
+        logger.info('node logger instantiated')
+
+        return logger
 
     def _initialize_arms(self, **kwargs):
         '''

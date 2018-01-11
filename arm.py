@@ -42,10 +42,12 @@ class Arm(object):
 
         self.arm = arm
         self.hostname = hostname
-        self._initialize_logger()
+        self.logger = self._initialize_logger()
         self.relays = self._initialize_relays(pins, **kwargs)
 
     def _get_logfile_name(self):
+        '''format log file as "hostname.log"'''
+
         return '{dir}/{hostname}.log'.format(dir='logs', hostname=self.hostname)
 
     def _initialize_logger(self):
@@ -54,8 +56,10 @@ class Arm(object):
 
         log_config['handlers']['file']['filename'] = self._get_logfile_name()
         logging.config.dictConfig(log_config)
-        self.logger = logging.getLogger('arm')
-        self.logger.info('arm {} logger instantiated'.format(self.arm))
+        logger = logging.getLogger('arm')
+        logger.info('arm {} logger instantiated'.format(self.arm))
+
+        return logger
 
     def _initialize_ratio(self):
         pass
