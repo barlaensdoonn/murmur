@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 1/9/17
+# updated: 1/10/17
 
 import socket
 from datetime import timedelta
@@ -14,9 +14,10 @@ class Arm(object):
     where Relay(pins[i]) represents an initiated relay object:
 
     self.relays = {
-        'lower': Relay(pins[0]),
-        'middle': Relay(pins[1]),
-        'upper': Relay([pins[2])
+        'low': Relay(pins[0]),
+        'mid-A': Relay(pins[1]),
+        'mid-B': Relay([pins[2]),
+        'tip-top': Relay([pins[3])
     }
 
     total_time = total amount of time in seconds that an arm takes to go through its movement sequence
@@ -26,15 +27,15 @@ class Arm(object):
 
     total_time = timedelta(seconds=180)
 
-    actuators = ['lower', 'middle', 'upper']
+    actuators = ['low', 'mid-A', 'mid-B', 'tip-top']
     ratio = [1, 3, 2]
     ratio_total = sum(ratio)
     seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
     def __init__(self, pins, **kwargs):
         '''
-        we accept **kwargs here to pass in board_type if needed. also pins should be
-        a list of 3 ints corresponding to GPIO pins to assign to the arm's relays
+        we accept **kwargs here to pass in board_type if needed.
+        pins should be a list of ints corresponding to GPIO pins to control relays
         '''
 
         self.relays = self._initialize_relays(pins, **kwargs)
