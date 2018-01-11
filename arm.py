@@ -29,8 +29,8 @@ class Arm(object):
 
     actuators = ['low', 'mid-A', 'mid-B', 'tip-top']
     ratio = [1, 3, 2]
-    ratio_total = sum(ratio)
-    seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
+    # ratio_total = sum(ratio)
+    # seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
     def __init__(self, arm, pins, **kwargs):
         '''

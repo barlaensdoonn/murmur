@@ -32,7 +32,6 @@ class Node(object):
     def __init__(self, **kwargs):
         '''we accept **kwargs here to pass in board_type if needed.'''
 
-        self.hostname = self._get_hostname()
         self.logger = self._initialize_logger()
         self.arms = self._initialize_arms(**kwargs)
 
