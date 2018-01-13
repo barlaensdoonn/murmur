@@ -3,7 +3,6 @@
 # 12/9/17
 # updated: 1/12/18
 
-import time
 import logging
 from arm import Arm
 
@@ -62,4 +61,3 @@ class Node(object):
 
         for arm in self.arms:
             self.arms[arm].test_connections()
-            time.sleep(1)
