@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/11/18
+# updated: 1/12/18
 
 import time
 import logging
@@ -61,5 +61,5 @@ class Node(object):
         '''utility method for debugging'''
 
         for arm in self.arms:
-            arm.test_connections()
+            self.arms[arm].test_connections()
             time.sleep(1)
