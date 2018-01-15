@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 1/11/18
+# updated: 1/15/18
 
 import logging
 from datetime import timedelta
@@ -27,7 +27,7 @@ class Arm(object):
 
     total_time = timedelta(seconds=180)
 
-    actuators = ['low', 'mid-A', 'mid-B', 'tip-top']
+    actuators = ['low', 'mid-A', 'mid-B', 'top']
     ratio = [1, 3, 2]
     # ratio_total = sum(ratio)
     # seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
