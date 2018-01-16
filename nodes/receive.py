@@ -56,7 +56,7 @@ class Receive(object):
 
         def _initialize_logger(self):
             logger = logging.getLogger('receive')
-            logger.info('arm {} logger instantiated'.format('receive'))
+            logger.info('receive logger instantiated')
 
             return logger
 
@@ -68,3 +68,5 @@ class Receive(object):
             server = socketserver.TCPServer(hostport, TCPHandler)
             server.logger = self.logger
             server.hostname = hostname
+
+            return server

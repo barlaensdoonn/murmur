@@ -9,6 +9,7 @@ import socket
 import logging
 import logging.config
 from node import Node
+from receive import Receive
 
 
 basepath = '/home/pi/gitbucket/murmur/nodes'
@@ -43,8 +44,26 @@ def configure_logger(hostname):
     return _initialize_logger()
 
 
+def initialize_node(hostname):
+    logger.info('...initializing node...')
+
+    return Node(hostname)
+
+def initialize_receive(node):
+    logger.info('...initializing receive...')
+
+    return Receive(node)
+
+
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
-    node = Node(hostname)
-    node.test_connections()
+    node = initialize_node(hostname)
+    receive = initialize_receive(nodes)
+
+    try:
+        logger.info('receive server entering serve_forever() loop')
+        receive.server.serve_forever()
+    except KeyboardInterrupt:
+        receive.server.shutdown()
+        logger.info('...user exit received, shutting down server...')
