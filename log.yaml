@@ -33,6 +33,10 @@ loggers:
         level: DEBUG
         handlers: [file]
         propogate: False
+    receive:
+        level: DEBUG
+        handlers: [file]
+        propogate: False
     A:
         level: DEBUG
         handlers: [file]
