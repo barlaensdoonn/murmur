@@ -59,7 +59,7 @@ if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
     node = initialize_node(hostname)
-    receive = initialize_receive(nodes)
+    receive = initialize_receive(node)
 
     try:
         logger.info('receive server entering serve_forever() loop')
