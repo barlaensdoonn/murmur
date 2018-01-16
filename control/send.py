@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # murmur - send socket messages for controlling nodes
 # 1/12/18
-# updated: 1/12/18
+# updated: 1/16/18
 
+import json
 import socket
 
 '''
@@ -27,10 +28,10 @@ class Send(object):
 
         return logger
 
-    def _encode_msg(msg):
+    def _encode_msg(self, msg):
         return '{}\r\n'.format(msg).encode()
 
-    def context_tcp(host, msg):
+    def context_tcp(self, host, msg):
         '''
         hostport in client connect should be tuple (host, port)
         '''
