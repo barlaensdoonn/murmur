@@ -11,7 +11,7 @@ import logging.config
 from node import Node
 
 
-basepath = '/home/pi/gitbucket/murmur/nodes'
+basepath = '/home/pi/gitbucket/murmur/control'
 
 def _get_logfile_name(hostname):
     '''format log file as "hostname.log"'''
