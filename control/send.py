@@ -28,10 +28,7 @@ class Send(object):
 
         return logger
 
-    def _encode_msg(self, msg):
-        return '{}\r\n'.format(msg).encode()
-
-    def package_msg(self, arm, actuator, activate):
+    def _package_msg(arm, actuator, activate):
         msg = {
             'arm': arm,
             'actuator': actuator,
@@ -40,7 +37,10 @@ class Send(object):
 
         return json.dumps(msg)
 
-    def context_tcp(self, host, msg):
+    def _encode_msg(self, msg):
+        return '{}\r\n'.format(msg).encode()
+
+    def _context_tcp_client(self, host, msg):
         '''
         hostport in client connect should be tuple (host, port)
         '''
@@ -56,3 +56,5 @@ class Send(object):
             data = client.recv(1024)
             print('received: {}'.format(data.decode()))
             self.logger.info('received message "{data}"'.format(data=data))
+
+    def send_msg(self, host, arm, actuator, msg):
