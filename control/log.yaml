@@ -1,0 +1,35 @@
+---
+version: 1
+
+formatters:
+    file:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+    console:
+        format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: console
+        stream: ext://sys.stdout
+    file:
+        class: logging.FileHandler
+        level: DEBUG
+        formatter: file
+
+loggers:
+    send:
+        level: DEBUG
+        handlers: [file]
+        propogate: False
+    main:
+        level: DEBUG
+        handlers: [file]
+        propogate: False
+
+root:
+    level: DEBUG
+    handlers: [console, file]
