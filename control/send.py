@@ -6,7 +6,7 @@
 import socket
 
 '''
-messages are sent to
+messages are sent to specific hosts
 message format:
 
 msg = {
