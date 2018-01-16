@@ -6,35 +6,44 @@
 import json
 import socket
 
-'''
-message format:
 
-msg = {
-    'arm': 'A',
-    'actuator': 'low',
-    'activate': True
-}
-'''
+class Message(object):
+    '''
+    message format:
 
-class Send(object):
+    msg = {
+        'arm': 'A',
+        'actuator': 'low',
+        'activate': True
+    }
+    '''
+
+    def __init__(self, arm, actuator, activate):
+        self.arm = arm
+        self.actuator = actuator
+        self.actuator = activate
+        self.msg = _package_msg()
+
+    def _package_msg(self):
+        msg = {
+            'arm': self.arm,
+            'actuator': self.actuator,
+            'activate': self.activate
+        }
+
+        return json.dumps(msg)
+
+
+class TCPClient(object):
 
     def __init__(self):
         self.logger = _initialize_logger()
 
     def _initialize_logger(self):
         logger = logging.getLogger('send')
-        logger.info('node logger instantiated')
+        logger.info('send logger instantiated')
 
         return logger
-
-    def _package_msg(arm, actuator, activate):
-        msg = {
-            'arm': arm,
-            'actuator': actuator,
-            'activate': activate
-        }
-
-        return json.dumps(msg)
 
     def _encode_msg(self, msg):
         return '{}\r\n'.format(msg).encode()
@@ -56,7 +65,7 @@ class Send(object):
             if data == encoded:
                 self.logger.info('host {host} acknowledged message was received'.format(host=host))
 
-    def send_msg(self, host, arm, actuator, msg):
+    def send_msg(self, host, msg):
         package = _package_msg(arm, actuator, msg)
         self.logger.info('sending message "{msg}" to host {host}'.format(msg=msg, host=host))
         self._tcp_client_send()

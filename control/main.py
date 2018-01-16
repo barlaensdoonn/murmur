@@ -8,7 +8,7 @@ import yaml
 import socket
 import logging
 import logging.config
-from node import Node
+from send import Message, TCPClient
 
 
 basepath = '/home/pi/gitbucket/murmur/control'
