@@ -70,3 +70,4 @@ class Arm(object):
 
     def deactivate(self, actuator):
         self.logger.info('deactivating {}'.format(actuator))
+        self.actuators[actuator].deactivate()

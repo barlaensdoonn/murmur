@@ -4,6 +4,7 @@
 # updated: 1/16/18
 
 import yaml
+import json
 import socket
 import logging
 import socketserver
@@ -20,19 +21,24 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def parse_msg(self):
         '''self.request is the TCP socket connected to the client'''
 
+        # receive data
         data = self.request.recv(1024)
         self.decoded = data.decode().strip()
-        
         self.server.logger.info("{} wrote: {}".format(self.client_address[0], self.decoded))
 
+        # acknowledge message was received by sending it back
+        self.request.sendall(self.data)
+
+        # message should be in json format
         try:
-            return {'host': msg[0], 'track': msg[1], 'volume': float(msg[2])}
-        except IndexError:
-            return None
+            return json.loads(self.decoded)
+        except Exception:
+            self.logger.error('exception!!')
 
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
-        msg = self.parse_msg()
+        action = self.parse_msg()
+        self.node.parse_action(action)
 
         if msg and msg['track'] in self.server.bmbx.sounds.keys():
             if msg['host'] == self.server.hostname:
@@ -46,14 +52,15 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def finish(self):
         '''finish method is always called by the base handler after handle method has completed'''
 
-        self.server.logger.debug('closed connection from {}'.format(self.client_address[0]))
+        self.server.logger.debug('closing connection from {}'.format(self.client_address[0]))
 
 
 class Receive(object):
 
-        def __init__(self):
+        def __init__(self, node):
             self.logger = self._initialize_logger()
             self.server = self._initialize_server()
+            self.node = node
 
         def _initialize_logger(self):
             logger = logging.getLogger('receive')

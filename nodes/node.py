@@ -61,3 +61,13 @@ class Node(object):
 
         for arm in self.arms:
             self.arms[arm].test_connections()
+
+    def parse_action(self, action):
+        arm = self.arms[action['arm']]
+        actuator = action['actuator']
+        activate = action['activate']
+
+        if activate:
+            arm[actuator].activate()
+        else:
+            arm[actuator].deactivate()
