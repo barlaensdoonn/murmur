@@ -24,9 +24,10 @@ class TCPHandler(socketserver.BaseRequestHandler):
         # receive data
         data = self.request.recv(1024)
         self.decoded = data.decode().strip()
-        self.server.logger.info("{} wrote: {}".format(self.client_address[0], self.decoded))
+        self.server.logger.info('{} wrote: {}'.format(self.client_address[0], self.decoded))
 
         # acknowledge message was received by sending it back
+        self.server.logger.info('sending message back to client')
         self.request.sendall(self.data)
 
         # message should be in json format
@@ -39,15 +40,6 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
         action = self.parse_msg()
         self.node.parse_action(action)
-
-        if msg and msg['track'] in self.server.bmbx.sounds.keys():
-            if msg['host'] == self.server.hostname:
-                self.server.logger.info('asking boombox to play "{}" at volume {}'.format(msg['track'], msg['volume']))
-                self.server.bmbx.play(msg['track'], msg['volume'])
-            else:
-                self.server.logger.info('received valid command {}, but not addressed to me, ignoring...'.format(self.decoded))
-        else:
-            self.server.logger.warning("invalid command '{}' received, ignoring...".format(self.decoded))
 
     def finish(self):
         '''finish method is always called by the base handler after handle method has completed'''

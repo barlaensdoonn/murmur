@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/12/18
+# updated: 1/16/18
 
 import logging
 from arm import Arm

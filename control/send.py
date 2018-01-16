@@ -7,7 +7,6 @@ import json
 import socket
 
 '''
-messages are sent to specific hosts
 message format:
 
 msg = {
@@ -40,7 +39,7 @@ class Send(object):
     def _encode_msg(self, msg):
         return '{}\r\n'.format(msg).encode()
 
-    def _context_tcp_client(self, host, msg):
+    def _tcp_client_send(self, host, msg):
         '''
         hostport in client connect should be tuple (host, port)
         '''
@@ -50,11 +49,14 @@ class Send(object):
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
             client.connect(hostport)
-            self.logger.info('sending message "{msg}" to host {host} on port {port}'.format(msg=msg, host=host, port=port))
             client.sendall(encoded)
 
             data = client.recv(1024)
-            print('received: {}'.format(data.decode()))
-            self.logger.info('received message "{data}"'.format(data=data))
+
+            if data == encoded:
+                self.logger.info('host {host} acknowledged message was received'.format(host=host))
 
     def send_msg(self, host, arm, actuator, msg):
+        package = _package_msg(arm, actuator, msg)
+        self.logger.info('sending message "{msg}" to host {host}'.format(msg=msg, host=host))
+        self._tcp_client_send()
