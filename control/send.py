@@ -66,6 +66,5 @@ class Sender(object):
                 self.logger.info('host {host} acknowledged message was received'.format(host=host))
 
     def send_msg(self, host, msg):
-        package = _package_msg(arm, actuator, msg)
         self.logger.info('sending message "{msg}" to host {host}'.format(msg=msg, host=host))
         self._tcp_client_send()
