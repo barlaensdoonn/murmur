@@ -31,6 +31,15 @@ class Send(object):
     def _encode_msg(self, msg):
         return '{}\r\n'.format(msg).encode()
 
+    def package_msg(self, arm, actuator, activate):
+        msg = {
+            'arm': arm,
+            'actuator': actuator,
+            'activate': activate
+        }
+
+        return json.dumps(msg)
+
     def context_tcp(self, host, msg):
         '''
         hostport in client connect should be tuple (host, port)
