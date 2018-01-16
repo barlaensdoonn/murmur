@@ -25,10 +25,10 @@ class Arm(object):
 
     '''
 
-    total_time = timedelta(seconds=180)
-
     actuators = ['low', 'mid-A', 'mid-B', 'top']
-    ratio = [1, 3, 2]
+
+    # total_time = timedelta(seconds=180)
+    # ratio = [1, 3, 2]
     # ratio_total = sum(ratio)
     # seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
@@ -64,5 +64,11 @@ class Arm(object):
             self.logger.debug('testing {actuator} relay connection on pin {pin}'.format(actuator=actuator, pin=self.relays[actuator].pin))
             self.relays[actuator].test_connection()
 
-    def run_forward(self):
-        pass
+    def activate(self, actuator):
+        self.logger.info('activating {}'.format(actuator))
+        self.relays[actuator].activate()
+
+    def deactivate(self, actuator):
+        self.logger.info('deactivating {}'.format(actuator))
+
+    
