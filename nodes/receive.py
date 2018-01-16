@@ -6,7 +6,6 @@
 import yaml
 import socket
 import logging
-import logging.config
 import socketserver
 
 
@@ -23,9 +22,8 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
         data = self.request.recv(1024)
         self.decoded = data.decode().strip()
+        
         self.server.logger.info("{} wrote: {}".format(self.client_address[0], self.decoded))
-
-        msg = self.decoded.split('/')
 
         try:
             return {'host': msg[0], 'track': msg[1], 'volume': float(msg[2])}
@@ -49,3 +47,25 @@ class TCPHandler(socketserver.BaseRequestHandler):
         '''finish method is always called by the base handler after handle method has completed'''
 
         self.server.logger.debug('closed connection from {}'.format(self.client_address[0]))
+
+
+class Receive(object):
+
+        def __init__(self):
+            self.logger = self._initialize_logger()
+            self.server = self._initialize_server()
+
+        def _initialize_logger(self):
+            logger = logging.getLogger('receive')
+            logger.info('arm {} logger instantiated'.format('receive'))
+
+            return logger
+
+        def _initialize_server(self):
+            hostport = ('', 9999)  # '' stands for all available interfaces
+            hostname = socket.gethostname()
+            self.logger.info('host {hostname} initializing open TCP server on port {port}'.format(hostname=hostname, port=hostport[1]))
+
+            server = socketserver.TCPServer(hostport, TCPHandler)
+            server.logger = self.logger
+            server.hostname = hostname
