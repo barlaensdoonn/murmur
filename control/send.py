@@ -34,7 +34,7 @@ class Message(object):
         return json.dumps(msg)
 
 
-class TCPClient(object):
+class Sender(object):
 
     def __init__(self):
         self.logger = _initialize_logger()
