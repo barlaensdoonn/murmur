@@ -10,10 +10,10 @@ from relay import relay  # nested relay repo from here: https://github.com/barla
 
 class Arm(object):
     '''
-    Arm.relays dictionary returned from _initialize_relays() is formatted as follows,
+    Arm.actuators dictionary returned from _initialize_actuators() is formatted as follows,
     where Relay(pins[i]) represents an initiated relay object:
 
-    self.relays = {
+    self.actuators = {
         'low': Relay(pins[0]),
         'mid-A': Relay(pins[1]),
         'mid-B': Relay([pins[2]),
@@ -25,8 +25,6 @@ class Arm(object):
 
     '''
 
-    actuators = ['low', 'mid-A', 'mid-B', 'top']
-
     # total_time = timedelta(seconds=180)
     # ratio = [1, 3, 2]
     # ratio_total = sum(ratio)
@@ -35,12 +33,12 @@ class Arm(object):
     def __init__(self, arm, pins, **kwargs):
         '''
         we accept **kwargs here to pass in board_type if needed.
-        pins should be a list of ints corresponding to GPIO pins to control relays
+        pins should be a list of ints corresponding to GPIO pins to control actuators
         '''
 
         self.arm = arm
         self.logger = self._initialize_logger()
-        self.relays = self._initialize_relays(pins, **kwargs)
+        self.actuators = self._initialize_actuators(pins, **kwargs)
 
     def _initialize_logger(self):
         logger = logging.getLogger(self.arm)
@@ -51,22 +49,24 @@ class Arm(object):
     def _initialize_ratio(self):
         pass
 
-    def _initialize_relays(self, pins, **kwargs):
-        self.logger.info('initializing relays on GPIO pins {}, {}, {}, {}'.format(*pins))
-        relays = [relay.Relay(pin, **kwargs) for pin in pins]
+    def _initialize_actuators(self, pins, **kwargs):
+        self.logger.info('initializing actuators on GPIO pins {}, {}, {}, {}'.format(*pins))
+        actuators = [relay.Relay(pin, **kwargs) for pin in pins]
 
-        return dict(zip(self.actuators, relays))
+        return dict(zip(self.actuators, actuators))
 
     def test_connections(self):
         '''utility method for debugging'''
 
-        for actuator in self.actuators:
-            self.logger.debug('testing {actuator} relay connection on pin {pin}'.format(actuator=actuator, pin=self.relays[actuator].pin))
-            self.relays[actuator].test_connection()
+        test_order = ['low', 'mid-A', 'mid-B', 'top']
+
+        for actuator in test_order:
+            self.logger.debug('testing {actuator} relay connection on pin {pin}'.format(actuator=actuator, pin=self.actuators[actuator].pin))
+            self.actuators[actuator].test_connection()
 
     def activate(self, actuator):
         self.logger.info('activating {}'.format(actuator))
-        self.relays[actuator].activate()
+        self.actuators[actuator].activate()
 
     def deactivate(self, actuator):
         self.logger.info('deactivating {}'.format(actuator))
