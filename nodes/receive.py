@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-# mind@large raspi audio component
+# murmur - socket server for receiving network messages
 # 11/24/17
-# updated: 1/15/18
+# updated: 1/16/18
 
 import yaml
 import socket
