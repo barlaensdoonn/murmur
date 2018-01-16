@@ -2,4 +2,4 @@
 .AppleDouble/
 __pycache__/
 relay/
-logs/
+*.log

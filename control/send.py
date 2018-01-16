@@ -22,7 +22,7 @@ class Message(object):
         self.arm = arm
         self.actuator = actuator
         self.actuator = activate
-        self.msg = _package_msg()
+        self.msg = self._package_msg()
 
     def _package_msg(self):
         msg = {
