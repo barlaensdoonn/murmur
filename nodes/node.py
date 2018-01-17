@@ -68,6 +68,6 @@ class Node(object):
         activate = action['activate']
 
         if activate:
-            arm[actuator].activate()
+            arm.actuators[actuator].activate()
         else:
-            arm[actuator].deactivate()
+            arm.actuators[actuator].deactivate()
