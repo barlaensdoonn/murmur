@@ -27,14 +27,14 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.server.logger.info('{} wrote: {}'.format(self.client_address[0], self.decoded))
 
         # acknowledge message was received by sending it back
-        self.server.logger.info('sending message back to client')
+        self.server.logger.info('sending acknowledgement back to client')
         self.request.sendall(data)
 
         # message should be in json format
         try:
             return json.loads(self.decoded)
         except Exception:
-            self.logger.error('exception!!')
+            self.server.logger.error('exception!!')
 
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
@@ -52,7 +52,6 @@ class Receive(object):
         def __init__(self, node):
             self.logger = self._initialize_logger()
             self.server = self._initialize_server()
-            self.node = node
 
         def _initialize_logger(self):
             logger = logging.getLogger('receive')
@@ -68,5 +67,6 @@ class Receive(object):
             server = socketserver.TCPServer(hostport, TCPHandler)
             server.logger = self.logger
             server.hostname = hostname
+            server.node = self.node
 
             return server
