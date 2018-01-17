@@ -51,8 +51,8 @@ class Receive(object):
 
         def __init__(self, node):
             self.logger = self._initialize_logger()
-            self.server = self._initialize_server()
             self.node = node
+            self.server = self._initialize_server()
 
         def _initialize_logger(self):
             logger = logging.getLogger('receive')
