@@ -39,7 +39,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
     def handle(self):
         self.server.logger.debug('client {} connected'.format(self.client_address[0]))
         action = self.parse_msg()
-        self.node.parse_action(action)
+        self.server.node.parse_action(action)
 
     def finish(self):
         '''finish method is always called by the base handler after handle method has completed'''
