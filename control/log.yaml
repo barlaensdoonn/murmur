@@ -25,6 +25,10 @@ loggers:
         level: DEBUG
         handlers: [file]
         propogate: False
+    timer:
+        level: DEBUG
+        handlers: [file]
+        propogate: False
     main:
         level: DEBUG
         handlers: [file]
