@@ -30,6 +30,8 @@ class Arm(object):
     # ratio_total = sum(ratio)
     # seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
+    actuator_order = ['low', 'mid-A', 'mid-B', 'top']
+
     def __init__(self, arm, pins, **kwargs):
         '''
         we accept **kwargs here to pass in board_type if needed.
@@ -53,14 +55,12 @@ class Arm(object):
         self.logger.info('initializing actuators on GPIO pins {}, {}, {}, {}'.format(*pins))
         actuators = [relay.Relay(pin, **kwargs) for pin in pins]
 
-        return dict(zip(self.actuators, actuators))
+        return dict(zip(self.actuator_order, actuators))
 
     def test_connections(self):
         '''utility method for debugging'''
 
-        test_order = ['low', 'mid-A', 'mid-B', 'top']
-
-        for actuator in test_order:
+        for actuator in self.actuator_order:
             self.logger.debug('testing {actuator} relay connection on pin {pin}'.format(actuator=actuator, pin=self.actuators[actuator].pin))
             self.actuators[actuator].test_connection()
 
