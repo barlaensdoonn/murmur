@@ -46,3 +46,9 @@ def configure_logger(hostname):
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
+
+    sender = Sender()
+    host = 'murmur01.local'
+    mess = ('A', 'low', True)
+    msg = Message(*mess)
+    sender.send_msg(host, msg.msg)
