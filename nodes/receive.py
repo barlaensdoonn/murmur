@@ -28,7 +28,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
         # acknowledge message was received by sending it back
         self.server.logger.info('sending message back to client')
-        self.request.sendall(self.data)
+        self.request.sendall(data)
 
         # message should be in json format
         try:
