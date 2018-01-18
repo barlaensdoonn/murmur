@@ -9,9 +9,9 @@ from datetime import datetime, timedelta
 
 
 '''
-start with M low; 2 second lag, move on to L all the way to A
-20 second delay
-start with A mid-ext
+1. start with M low; 2 second delay; repeat sequentially all the way to A
+2. 20 second delay after low movement
+3. start with A and fire both mid-ext and top; 5 second delay; repeat to L
 '''
 
 class Timer(object):
@@ -20,23 +20,23 @@ class Timer(object):
     pauses = {
         'low': {
             'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=20)
+            'done': timedelta(seconds=10)
         },
         'mid': {
-            'between': timedelta(seconds=5),
-            'after': timedelta(seconds=60)
+            'sequence': timedelta(seconds=2),
+            'done': timedelta(seconds=10)
         }
     }
 
 
-    def __init__(self):
-        self.logger = self._initialize_logger()
-
-    def _initialize_logger(self):
-        logger = logging.getLogger('timer')
-        logger.info('timer logger instantiated')
-
-        return logger
+    # def __init__(self):
+    #     self.logger = self._initialize_logger()
+    #
+    # def _initialize_logger(self):
+    #     logger = logging.getLogger('timer')
+    #     logger.info('timer logger instantiated')
+    #
+    #     return logger
 
     def _get_pause(self, pause):
         return datetime.now() + pause
@@ -53,12 +53,12 @@ class Timer(object):
 
 
     def fire_low(self):
-        order = arms[::-1]  # start with arm M
+        order = self.arms[::-1]  # start with arm M
         actuator = 'low'
         activate = True
 
         for arm in order:
-            pause = self._get_pause(pauses['low']['sequence'])
+            pause = self._get_pause(self.pauses['low']['sequence'])
 
             while True:
                 if datetime.now() <= pause:
@@ -68,29 +68,36 @@ class Timer(object):
                     break
 
     def fire_mid_and_top(self):
-        order = arms
+        order = self.arms
         actuators = ['mid-ext', 'top']
         activate = True
 
         for arm in order:
             pause = self._get_pause(self.pauses['mid']['sequence'])
 
-            while True: if datetime.now() <= pause:
-                yield None
-            else:
-                yield (arm, actuators[0], True)
-                yield (arm, actuators[1], True)
-                break
+            while True:
+                if datetime.now() <= pause:
+                    yield None
+                else:
+                    yield (arm, actuators[0], True)
+                    yield (arm, actuators[1], True)
+                    break
 
     def wrapper(self):
-        for action in fire_low():
+        print('firing low')
+        for action in self.fire_low():
             yield action
 
-        print('done yielding, sleeping for 20 seconds'.format())
-        yield take_break(self.pauses['low']['done'])
+        brk = self.pauses['low']['done']
+        print('done firing low, taking a break for {} seconds...'.format(brk.seconds))
+        for pause in self.take_break(brk):
+            yield pause
 
-        for action in fire_mid_and_top(self):
+        print('firing mid and top')
+        for action in self.fire_mid_and_top():
             yield action
 
-        print('done yielding, sleeping for 60 seconds...')
-        yield take_break(self.pauses['mid']['done'])
+        brk = self.pauses['mid']['done']
+        print('done firing mid-ext and top, taking a break for {} seconds...'.format(brk.seconds))
+        for pause in self.take_break(brk):
+            yield pause
