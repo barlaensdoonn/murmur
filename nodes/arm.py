@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 1/16/18
+# updated: 1/18/18
 
 import logging
 from datetime import timedelta
@@ -15,8 +15,8 @@ class Arm(object):
 
     self.actuators = {
         'low': Relay(pins[0]),
-        'mid-A': Relay(pins[1]),
-        'mid-B': Relay([pins[2]),
+        'mid-ext': Relay(pins[1]),
+        'mid-retract': Relay([pins[2]),
         'tip-top': Relay([pins[3])
     }
 
@@ -30,7 +30,7 @@ class Arm(object):
     # ratio_total = sum(ratio)
     # seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
-    actuator_order = ['low', 'mid-A', 'mid-B', 'top']
+    actuator_order = ['low', 'mid-ext', 'mid-retract', 'top']
 
     def __init__(self, arm, pins, **kwargs):
         '''
