@@ -32,6 +32,10 @@ class Timer(object):
         'mid-retract_and_top': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=10)
+        },
+        'lowlow': {
+            'sequence': timedelta(seconds=2),
+            'done': timedelta(seconds=10)
         }
     }
 
@@ -50,6 +54,11 @@ class Timer(object):
             'order': arms_M_to_A,
             'actuators': ['top', 'mid-ext', 'mid-retract'],
             'activate': [False, False, True]
+        },
+        'lowlow': {
+            'order': arms_M_to_A,
+            'actuators': ['low'],
+            'activate': [False]
         }
     }
 
@@ -65,9 +74,10 @@ class Timer(object):
     def _get_pause(self, pause):
         return datetime.now() + pause
 
-    def _take_break(self, pause):
-        print('done firing low, taking a break for {} seconds...'.format(pause.seconds))
-        pause = self._get_pause(pause)
+    def _take_break(self, action):
+        paws = self.pauses[action]['done']
+        print('done firing {action}, taking a break for {pause} seconds...'.format(action=action, pause=paws.seconds))
+        pause = self._get_pause(paws)
 
         while True:
             if datetime.now() <= pause:
@@ -94,15 +104,32 @@ class Timer(object):
                             time.sleep(0.1)
                     break
 
-    def wrapper(self):
+    def _wrapper(self):
         for action in self._fire('low'):
             yield action
-
-        for pause in self._take_break(self.pauses['low']['done']):
+        for pause in self._take_break('low'):
             yield pause
 
         for action in self._fire('mid-ext_and_top'):
             yield action
-
-        for pause in self._take_break(self.pauses['mid-ext_and_top']['done']):
+        for pause in self._take_break('mid-ext_and_top'):
             yield pause
+
+        for action in self._fire('mid-retract_and_top'):
+            yield action
+        for pause in self._take_break('mid-retract_and_top'):
+            yield pause
+
+        for action in self._fire('lowlow'):
+            yield action
+        for pause in self._take_break('lowlow'):
+            yield pause
+
+    def run(self):
+        while True:
+            try:
+                for thing in self._wrapper():
+                    yield thing
+            except KeyboardInterrupt:
+                print('...user exit received...')
+                break
