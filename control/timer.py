@@ -26,16 +26,16 @@ class Timer(object):
             'done': timedelta(seconds=10)
         },
         'mid-ext_and_top': {
-            'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=10)
+            'sequence': timedelta(seconds=5),
+            'done': timedelta(seconds=60)
         },
         'mid-retract_and_top': {
-            'sequence': timedelta(seconds=2),
+            'sequence': timedelta(seconds=5),
             'done': timedelta(seconds=10)
         },
         'lowlow': {
             'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=10)
+            'done': timedelta(seconds=60)
         }
     }
 
