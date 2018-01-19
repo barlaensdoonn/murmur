@@ -8,6 +8,7 @@ import yaml
 import socket
 import logging
 import logging.config
+from timer import Timer
 from send import Message, Sender
 
 
@@ -56,3 +57,5 @@ if __name__ == '__main__':
         sender.send_msg(host, msg.msg)
     except socket.gaierror:
         logger.error('unable to connect to host {}'.format(host))
+    except KeyboardInterrupt:
+        logger.info('''...user exit received...''')
