@@ -67,7 +67,7 @@ if __name__ == '__main__':
         for event in timer.run():
             if event:
                 action = event
-                host = get_host_by_arm(action[0])
+                host = '{}.local'.format(get_host_by_arm(action[0])
                 msg = Message(*action)
                 sender.send_msg(host, msg.msg)
     except socket.gaierror:
