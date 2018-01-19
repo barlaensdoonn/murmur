@@ -63,11 +63,14 @@ class Node(object):
             self.arms[arm].test_connections()
 
     def parse_action(self, action):
-        arm = self.arms[action['arm']]
-        actuator = action['actuator']
-        activate = action['activate']
+        try:
+            arm = self.arms[action['arm']]
+            actuator = action['actuator']
+            activate = action['activate']
 
-        if activate:
-            arm.actuators[actuator].activate()
-        else:
-            arm.actuators[actuator].deactivate()
+            if activate:
+                arm.actuators[actuator].activate()
+            else:
+                arm.actuators[actuator].deactivate()
+        except KeyError:
+            self.logger.error('invalid command received, ignoring...')

@@ -51,4 +51,8 @@ if __name__ == '__main__':
     host = 'murmur01.local'
     mess = ('A', 'low', True)
     msg = Message(*mess)
-    sender.send_msg(host, msg.msg)
+
+    try:
+        sender.send_msg(host, msg.msg)
+    except socket.gaierror:
+        logger.error('unable to connect to host {}'.format(host))
