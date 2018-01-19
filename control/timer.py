@@ -62,21 +62,21 @@ class Timer(object):
         }
     }
 
-    # def __init__(self):
-    #     self.logger = self._initialize_logger()
-    #
-    # def _initialize_logger(self):
-    #     logger = logging.getLogger('timer')
-    #     logger.info('timer logger instantiated')
-    #
-    #     return logger
+    def __init__(self):
+        self.logger = self._initialize_logger()
+
+    def _initialize_logger(self):
+        logger = logging.getLogger('timer')
+        logger.info('timer logger instantiated')
+
+        return logger
 
     def _get_pause(self, pause):
         return datetime.now() + pause
 
-    def _take_break(self, action):
+    def _pause(self, action):
         paws = self.pauses[action]['done']
-        print('done firing {action}, taking a break for {pause} seconds...'.format(action=action, pause=paws.seconds))
+        self.logger.info('done firing {action}, pausing for {pause} seconds...'.format(action=action, pause=paws.seconds))
         pause = self._get_pause(paws)
 
         while True:
@@ -87,7 +87,7 @@ class Timer(object):
                 break
 
     def _fire(self, action):
-        print('firing {}'.format(action))
+        self.logger.info('firing {}'.format(action))
         for arm in self.actions[action]['order']:
             pause = self._get_pause(self.pauses[action]['sequence'])
 
@@ -99,7 +99,9 @@ class Timer(object):
                     activate = self.actions[action]['activate']
 
                     for i in range(len(actuators)):
-                        yield (arm, actuators[i], activate[i])
+                        action_tuple = (arm, actuators[i], activate[i])
+                        self.logger.debug('yielding action: {}'.format(action_tuple))
+                        yield (*action_tuple)
                         if actuators[i] == 'mid-ext':
                             time.sleep(0.1)
                     break
@@ -107,22 +109,22 @@ class Timer(object):
     def _wrapper(self):
         for action in self._fire('low'):
             yield action
-        for pause in self._take_break('low'):
+        for pause in self._pause('low'):
             yield pause
 
         for action in self._fire('mid-ext_and_top'):
             yield action
-        for pause in self._take_break('mid-ext_and_top'):
+        for pause in self._pause('mid-ext_and_top'):
             yield pause
 
         for action in self._fire('mid-retract_and_top'):
             yield action
-        for pause in self._take_break('mid-retract_and_top'):
+        for pause in self._pause('mid-retract_and_top'):
             yield pause
 
         for action in self._fire('lowlow'):
             yield action
-        for pause in self._take_break('lowlow'):
+        for pause in self._pause('lowlow'):
             yield pause
 
     def run(self):
@@ -131,5 +133,5 @@ class Timer(object):
                 for event in self._wrapper():
                     yield event
             except KeyboardInterrupt:
-                print('...user exit received...')
+                self.logger.info('...user exit received...')
                 break
