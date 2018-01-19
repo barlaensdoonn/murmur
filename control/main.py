@@ -14,6 +14,13 @@ from send import Message, Sender
 
 basepath = '/home/pi/gitbucket/murmur/control'
 
+host_arm_map = {
+    'murmur01': ['A', 'B', 'C'],
+    'murmur02': ['D', 'E', 'F'],
+    'murmur03': ['G', 'H', 'J'],
+    'murmur04': ['K', 'L', 'M']
+}
+
 
 def _get_logfile_name(hostname):
     '''format log file as "hostname.log"'''
@@ -32,6 +39,12 @@ def get_hostname():
     return socket.gethostname().split('.')[0]
 
 
+def get_host_by_arm(arm):
+    for host in host_arm_map:
+        if arm in host_arm_map[host]:
+            return host
+
+
 def configure_logger(hostname):
     with open(os.path.join(basepath, 'log.yaml'), 'r') as log_conf:
         log_config = yaml.safe_load(log_conf)
@@ -47,15 +60,23 @@ def configure_logger(hostname):
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
-
     sender = Sender()
+    timer = Timer()
+
     host = 'murmur01.local'
     mess = ('A', 'low', True)
     msg = Message(*mess)
 
     try:
-        sender.send_msg(host, msg.msg)
+        for event in timer.run():
+            if event:
+                action = event
+                host = get_host_by_arm(action[0])
+                msg = Message(*action)
+                sender.send_msg(host, msg.msg)
     except socket.gaierror:
         logger.error('unable to connect to host {}'.format(host))
     except KeyboardInterrupt:
         logger.info('''...user exit received...''')
+    except Exception:
+        logger.exception('exception!!')
