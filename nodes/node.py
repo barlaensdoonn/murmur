@@ -72,5 +72,7 @@ class Node(object):
                 arm.actuators[actuator].activate()
             else:
                 arm.actuators[actuator].deactivate()
+        except TypeError:
+            self.logger.warning('received improperly formatted message {}, ignoring...'.format(action))
         except KeyError:
             self.logger.error('invalid command received, ignoring...')
