@@ -128,8 +128,8 @@ class Timer(object):
     def run(self):
         while True:
             try:
-                for thing in self._wrapper():
-                    yield thing
+                for event in self._wrapper():
+                    yield event
             except KeyboardInterrupt:
                 print('...user exit received...')
                 break
