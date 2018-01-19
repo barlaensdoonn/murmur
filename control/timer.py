@@ -101,7 +101,7 @@ class Timer(object):
                     for i in range(len(actuators)):
                         action_tuple = (arm, actuators[i], activate[i])
                         self.logger.debug('yielding action: {}'.format(action_tuple))
-                        yield (*action_tuple)
+                        yield (action_tuple)
                         if actuators[i] == 'mid-ext':
                             time.sleep(0.1)
                     break
