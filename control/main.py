@@ -63,10 +63,6 @@ if __name__ == '__main__':
     sender = Sender()
     timer = Timer()
 
-    host = 'murmur01.local'
-    mess = ('A', 'low', True)
-    msg = Message(*mess)
-
     try:
         for event in timer.run():
             if event:
