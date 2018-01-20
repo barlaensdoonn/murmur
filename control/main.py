@@ -87,5 +87,3 @@ if __name__ == '__main__':
             logger.exception('exception!!')
             logger.error('sleeping for 2 minutes, then trying again')
             time.sleep(120)
-    except KeyboardInterrupt:
-        break
