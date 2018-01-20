@@ -29,7 +29,7 @@ class Timer(object):
             'sequence': timedelta(seconds=5),
             'done': timedelta(seconds=60)
         },
-        'mid-ext_and_mid-retract': {
+        'initialize_mid_and_top': {
             'sequence': timedelta(seconds=5),
             'done': timedelta(seconds=10)
         },
@@ -54,10 +54,10 @@ class Timer(object):
             'actuators': ['mid-ext', 'top'],
             'activate': [True, True]
         },
-        'mid-ext_and_mid-retract': {
+        'initialize_mid_and_top': {
             'order': arms_M_to_A,
-            'actuators': ['mid-ext', 'mid-retract'],
-            'activate': [False, True]
+            'actuators': ['mid-ext', 'top', 'mid-retract'],
+            'activate': [False, False, True]
         },
         'mid-retract_and_top': {
             'order': arms_M_to_A,
@@ -142,9 +142,9 @@ class Timer(object):
         for pause in self._pause('low'):
             yield pause
 
-        for action in self._fire('mid-ext_and_mid-retract'):
+        for action in self._fire('initialize_mid_and_top'):
             yield action
-        for pause in self._pause('mid-ext_and_mid-retract'):
+        for pause in self._pause('initialize_mid_and_top'):
             yield pause
 
     def run(self):
