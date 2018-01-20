@@ -34,12 +34,18 @@ class Node(object):
         self.hostname = hostname
         self.logger = self._initialize_logger()
         self.arms = self._initialize_arms(**kwargs)
+        self._modify_pin_groups()
 
     def _initialize_logger(self):
         logger = logging.getLogger('node')
         logger.info('node logger instantiated')
 
         return logger
+
+    def _modify_pin_groups(self):
+        if self.hostname == 'murmur04':
+            self.logger.info('modifying last pin group to [12, 25, 20, 21]')
+            self.pin_groups[-1] = [12, 25, 20, 21]
 
     def _initialize_arms(self, **kwargs):
         '''
