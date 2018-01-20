@@ -50,8 +50,8 @@ class Timer(object):
     actions = {
         'initialize_mid_and_top': {
             'order': arms_M_to_A,
-            'actuators': ['mid-ext', 'top', 'mid-retract'],
-            'activate': [False, True, True]
+            'actuators': ['top', 'mid-ext', 'mid-retract'],
+            'activate': [True, False, True]
         },
         'release_mid_retract': {
             'order': arms_M_to_A,
