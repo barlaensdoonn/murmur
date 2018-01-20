@@ -27,7 +27,7 @@ class Timer(object):
         },
         'release_mid_retract': {
             'sequence': timedelta(seconds=1),
-            'done': timedelta(seconds=60)
+            'done': timedelta(seconds=10)
         },
         'low': {
             'sequence': timedelta(seconds=2),
@@ -35,15 +35,15 @@ class Timer(object):
         },
         'mid-ext_and_top': {
             'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=60)
+            'done': timedelta(seconds=120)
         },
         'mid-retract_and_top': {
             'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=10)
+            'done': timedelta(seconds=60)
         },
         'lowlow': {
             'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=60)
+            'done': timedelta(seconds=180)
         }
     }
 
