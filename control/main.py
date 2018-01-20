@@ -58,17 +58,43 @@ def configure_logger(hostname):
     return _initialize_logger()
 
 
-def initialize_sculpture():
-    pass
-
-
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
     sender = Sender()
     timer = Timer()
+    initializing = True
+    running = True
 
-    while True:
+    while initializing:
+        logger.info('initializing sculpture')
+
+        try:
+            for event in timer.initialize():
+                if event:
+                    action = event
+                    host = '{}.local'.format(get_host_by_arm(action[0]))
+                    msg = Message(*action)
+                    sender.send_msg(host, msg.msg)
+
+            initializing = False
+            logger.info('done intializing sculpture')
+        except socket.gaierror:
+            logger.error('unable to connect to host {}'.format(host))
+            logger.error('sleeping for 2 minutes, then trying again')
+            time.sleep(120)
+        except KeyboardInterrupt:
+            logger.info('''...user exit received...''')
+            running = False
+            break
+        except Exception:
+            logger.exception('exception!!')
+            logger.error('sleeping for 2 minutes, then trying again')
+            time.sleep(120)
+
+    while running:
+        logger.info('starting main sequence')
+
         try:
             for event in timer.run():
                 if event:
@@ -82,6 +108,7 @@ if __name__ == '__main__':
             time.sleep(120)
         except KeyboardInterrupt:
             logger.info('''...user exit received...''')
+            running = False
             break
         except Exception:
             logger.exception('exception!!')
