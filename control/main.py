@@ -68,7 +68,7 @@ if __name__ == '__main__':
     sender = Sender()
     timer = Timer()
 
-    while true:
+    while True:
         try:
             for event in timer.run():
                 if event:
