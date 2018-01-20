@@ -51,7 +51,7 @@ class Timer(object):
         'initialize_mid_and_top': {
             'order': arms_M_to_A,
             'actuators': ['mid-ext', 'top', 'mid-retract'],
-            'activate': [False, False, True]
+            'activate': [False, True, True]
         },
         'release_mid_retract': {
             'order': arms_M_to_A,
@@ -66,12 +66,12 @@ class Timer(object):
         'mid-ext_and_top': {
             'order': arms_A_to_M,
             'actuators': ['mid-ext', 'top'],
-            'activate': [True, True]
+            'activate': [True, False]
         },
         'mid-retract_and_top': {
             'order': arms_M_to_A,
             'actuators': ['top', 'mid-ext', 'mid-retract'],
-            'activate': [False, False, True]
+            'activate': [True, False, True]
         },
         'lowlow': {
             'order': arms_M_to_A,
