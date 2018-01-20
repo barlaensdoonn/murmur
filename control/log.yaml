@@ -12,28 +12,32 @@ formatters:
 handlers:
     console:
         class: logging.StreamHandler
-        level: DEBUG
+        level: INFO
         formatter: console
         stream: ext://sys.stdout
     file:
         class: logging.FileHandler
-        level: DEBUG
+        level: INFO
         formatter: file
 
 loggers:
     send:
-        level: DEBUG
+        level: INFO
         handlers: [file]
         propogate: False
     timer:
-        level: DEBUG
+        level: INFO
         handlers: [file]
         propogate: False
     main:
-        level: DEBUG
+        level: INFO
+        handlers: [file]
+        propogate: False
+    shutdown:
+        level: INFO
         handlers: [file]
         propogate: False
 
 root:
-    level: DEBUG
+    level: INFO
     handlers: [console, file]
