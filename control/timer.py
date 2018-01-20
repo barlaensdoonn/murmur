@@ -147,8 +147,6 @@ class Timer(object):
         for pause in self._pause('mid-ext_and_mid-retract'):
             yield pause
 
-
-
     def run(self):
         while True:
             try:
