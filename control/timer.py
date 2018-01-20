@@ -32,7 +32,7 @@ class Timer(object):
         'mid-ext_and_mid-retract': {
             'sequence': timedelta(seconds=5),
             'done': timedelta(seconds=10)
-        }
+        },
         'mid-retract_and_top': {
             'sequence': timedelta(seconds=5),
             'done': timedelta(seconds=10)
