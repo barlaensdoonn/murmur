@@ -21,6 +21,14 @@ class Timer(object):
     arms_M_to_A = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
     pauses = {
+        'initialize_mid_and_top': {
+            'sequence': timedelta(seconds=5),
+            'done': timedelta(seconds=10)
+        },
+        'release_mid_retract': {
+            'sequence': timedelta(seconds=1),
+            'done': timedelta(seconds=60)
+        },
         'low': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=10)
@@ -28,10 +36,6 @@ class Timer(object):
         'mid-ext_and_top': {
             'sequence': timedelta(seconds=5),
             'done': timedelta(seconds=60)
-        },
-        'initialize_mid_and_top': {
-            'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=10)
         },
         'mid-retract_and_top': {
             'sequence': timedelta(seconds=5),
@@ -44,6 +48,16 @@ class Timer(object):
     }
 
     actions = {
+        'initialize_mid_and_top': {
+            'order': arms_M_to_A,
+            'actuators': ['mid-ext', 'top', 'mid-retract'],
+            'activate': [False, False, True]
+        },
+        'release_mid_retract': {
+            'order': arms_M_to_A,
+            'actuators': ['mid-retract'],
+            'activate': [False]
+        },
         'low': {
             'order': arms_M_to_A,
             'actuators': ['low'],
@@ -53,11 +67,6 @@ class Timer(object):
             'order': arms_A_to_M,
             'actuators': ['mid-ext', 'top'],
             'activate': [True, True]
-        },
-        'initialize_mid_and_top': {
-            'order': arms_M_to_A,
-            'actuators': ['mid-ext', 'top', 'mid-retract'],
-            'activate': [False, False, True]
         },
         'mid-retract_and_top': {
             'order': arms_M_to_A,
@@ -145,6 +154,16 @@ class Timer(object):
         for action in self._fire('initialize_mid_and_top'):
             yield action
         for pause in self._pause('initialize_mid_and_top'):
+            yield pause
+
+        for action in self._fire('release_mid_retract'):
+            yield action
+        for pause in self._pause('release_mid_retract'):
+            yield pause
+
+        for action in self._fire('lowlow'):
+            yield action
+        for pause in self._pause('lowlow'):
             yield pause
 
     def run(self):
