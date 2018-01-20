@@ -59,7 +59,7 @@ def configure_logger(hostname):
 
 
 def initialize_sculpture():
-    
+    pass
 
 
 if __name__ == '__main__':
