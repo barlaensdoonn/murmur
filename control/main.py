@@ -4,6 +4,7 @@
 # updated: 1/16/18
 
 import os
+import time
 import yaml
 import socket
 import logging
@@ -57,22 +58,32 @@ def configure_logger(hostname):
     return _initialize_logger()
 
 
+def initialize_sculpture():
+    
+
+
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
     sender = Sender()
     timer = Timer()
 
-    try:
-        for event in timer.run():
-            if event:
-                action = event
-                host = '{}.local'.format(get_host_by_arm(action[0]))
-                msg = Message(*action)
-                sender.send_msg(host, msg.msg)
-    except socket.gaierror:
-        logger.error('unable to connect to host {}'.format(host))
-    except KeyboardInterrupt:
-        logger.info('''...user exit received...''')
-    except Exception:
-        logger.exception('exception!!')
+    while true:
+        try:
+            for event in timer.run():
+                if event:
+                    action = event
+                    host = '{}.local'.format(get_host_by_arm(action[0]))
+                    msg = Message(*action)
+                    sender.send_msg(host, msg.msg)
+        except socket.gaierror:
+            logger.error('unable to connect to host {}'.format(host))
+            logger.error('sleeping for 2 minutes, then trying again')
+            time.sleep(120)
+        except KeyboardInterrupt:
+            logger.info('''...user exit received...''')
+            break
+        except Exception:
+            logger.exception('exception!!')
+            logger.error('sleeping for 2 minutes, then trying again')
+            time.sleep(120)
