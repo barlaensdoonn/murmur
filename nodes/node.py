@@ -33,8 +33,8 @@ class Node(object):
 
         self.hostname = hostname
         self.logger = self._initialize_logger()
-        self.arms = self._initialize_arms(**kwargs)
         self._modify_pin_groups()
+        self.arms = self._initialize_arms(**kwargs)
 
     def _initialize_logger(self):
         logger = logging.getLogger('node')
