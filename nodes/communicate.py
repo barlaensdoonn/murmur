@@ -1,7 +1,10 @@
 #!/usr/bin/python3
 # murmur - communicate between nodes
 # 1/12/18
-# updated: 1/12/18
+# updated: 1/23/18
+
+# NOTE: this module is currently not being used
+
 
 import socket
 from curio import run, tcp_server
