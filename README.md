@@ -15,6 +15,8 @@ git clone https://github.com/barlaensdoonn/relay.git
 ```
 
 ## connections
+![circuit layout](murmur_control_circuit_single_node.pdf)
+
 #### *denkovi 5V 4-channel relay board*
 [link to the board](http://denkovi.com/relay-module-5v-4-channels-for-raspberry-pi-arduino-pic-avr)
 ```
