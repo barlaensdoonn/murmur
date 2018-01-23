@@ -85,7 +85,7 @@ if __name__ == '__main__':
             time.sleep(120)
         except KeyboardInterrupt:
             logger.info('''...user exit received...''')
-            running = False
+            initializing = False
             break
         except Exception:
             logger.exception('exception!!')
