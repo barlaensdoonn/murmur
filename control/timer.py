@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 1/18/18
+# updated: 1/23/18
 
 import time
 import logging
@@ -10,11 +10,17 @@ from datetime import datetime, timedelta
 
 
 '''
-1. start with M low; 2 second delay; repeat sequentially all the way to A
-2. 20 second delay after low movement
-3. start with A and fire both mid-ext and top; 5 second delay; repeat to L
-4. reverse starting with M top and mid-retract; then low
+1. activate M low; 2 second delay; repeat sequentially all the way to A
+2. 10 second delay after low movement
+3. start with A and simultaneously activate mid-ext and deactivate top; 5 second delay; repeat to M
+4. 2 minute rest in fully open position
+5. activate M top, deactivate mid-ext, 0.1 second delay, activate mid-retract; repeat to A
+6. 1 minute pause
+7. deactivate low A; 2 second pause; repeat to M
+8. 3 minute rest in fully closed position
+9. repeat #1 - #8
 '''
+
 
 class Timer(object):
     arms_A_to_M = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
@@ -106,6 +112,7 @@ class Timer(object):
 
     def _fire(self, action):
         self.logger.info('firing {}'.format(action))
+
         for arm in self.actions[action]['order']:
             pause = self._get_pause(self.pauses[action]['sequence'])
 
@@ -120,6 +127,7 @@ class Timer(object):
                         action_tuple = (arm, actuators[i], activate[i])
                         self.logger.debug('yielding action: {}'.format(action_tuple))
                         yield (action_tuple)
+
                         if actuators[i] == 'mid-ext':
                             time.sleep(0.1)
                     break
