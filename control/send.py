@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - send socket messages for controlling nodes
 # 1/12/18
-# updated: 1/16/18
+# updated: 1/23/18
 
 import json
 import socket
@@ -36,6 +36,7 @@ class Message(object):
 
 
 class Sender(object):
+    '''class to handle sending Message instances to listening hosts'''
 
     def __init__(self):
         self.logger = self._initialize_logger()
@@ -50,9 +51,7 @@ class Sender(object):
         return '{}\r\n'.format(msg).encode()
 
     def _tcp_client_send(self, host, msg):
-        '''
-        hostport in client connect should be tuple (host, port)
-        '''
+        '''hostport in client connect should be tuple (host, port)'''
 
         hostport = (host, 9999)
         encoded = self._encode_msg(msg)
