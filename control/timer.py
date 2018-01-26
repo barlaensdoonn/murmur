@@ -27,14 +27,6 @@ class Timer(object):
     arms_M_to_A = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
     pauses = {
-        'initialize_mid_and_top': {
-            'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=10)
-        },
-        'release_mid_retract': {
-            'sequence': timedelta(seconds=1),
-            'done': timedelta(seconds=10)
-        },
         'low': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=10)
@@ -54,11 +46,6 @@ class Timer(object):
     }
 
     actions = {
-        'release_mid_retract': {
-            'order': arms_M_to_A,
-            'actuators': ['mid-retract'],
-            'activate': [False]
-        },
         'low': {
             'order': arms_M_to_A,
             'actuators': ['low'],
@@ -135,7 +122,7 @@ class Timer(object):
                 yield pause
 
     def initialize(self):
-        sequence = ['low', 'mid-retract_and_top', 'release_mid_retract', 'lowlow']
+        sequence = ['low', 'mid-retract_and_top', 'lowlow']
 
         for event in self._wrapper(sequence):
             yield event
