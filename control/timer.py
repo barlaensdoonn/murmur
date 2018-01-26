@@ -66,8 +66,8 @@ class Timer(object):
         },
         'mid-ext_and_top': {
             'order': arms_A_to_M,
-            'actuators': ['mid-ext', 'top'],
-            'activate': [True, False]
+            'actuators': ['mid-retract', 'mid-ext', 'top'],
+            'activate': [False, True, False]
         },
         'mid-retract_and_top': {
             'order': arms_M_to_A,
@@ -123,7 +123,7 @@ class Timer(object):
                         self.logger.debug('yielding action: {}'.format(action_tuple))
                         yield (action_tuple)
 
-                        if actuators[i] == 'mid-ext':
+                        if 'mid' in actuators[i]:
                             time.sleep(0.1)
                     break
 
