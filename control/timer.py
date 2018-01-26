@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 1/23/18
+# updated: 1/25/18
 
 import time
 import logging
@@ -54,11 +54,6 @@ class Timer(object):
     }
 
     actions = {
-        'initialize_mid_and_top': {
-            'order': arms_M_to_A,
-            'actuators': ['top', 'mid-ext', 'mid-retract'],
-            'activate': [True, False, True]
-        },
         'release_mid_retract': {
             'order': arms_M_to_A,
             'actuators': ['mid-retract'],
@@ -159,9 +154,9 @@ class Timer(object):
         for pause in self._pause('low'):
             yield pause
 
-        for action in self._fire('initialize_mid_and_top'):
+        for action in self._fire('mid-retract_and_top'):
             yield action
-        for pause in self._pause('initialize_mid_and_top'):
+        for pause in self._pause('mid-retract_and_top'):
             yield pause
 
         for action in self._fire('release_mid_retract'):
