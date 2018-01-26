@@ -42,6 +42,10 @@ class Timer(object):
         'lowlow': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=180)
+        },
+        'release_mid-ext': {
+            'sequence': timedelta(seconds=1),
+            'done': timedelta(seconds=60)
         }
     }
 
@@ -64,6 +68,11 @@ class Timer(object):
         'lowlow': {
             'order': arms_M_to_A,
             'actuators': ['low'],
+            'activate': [False]
+        },
+        'release_mid-ext': {
+            'order': arms_M_to_A,
+            'actuators': ['mid-ext'],
             'activate': [False]
         }
     }
@@ -129,6 +138,12 @@ class Timer(object):
 
     def run(self):
         sequence = ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow']
+
+        for event in self._wrapper(sequence):
+            yield event
+
+    def shutdown(self):
+        sequence = ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
 
         for event in self._wrapper(sequence):
             yield event
