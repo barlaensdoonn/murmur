@@ -127,53 +127,21 @@ class Timer(object):
                             time.sleep(0.1)
                     break
 
-    def _wrapper(self):
-        for action in self._fire('low'):
-            yield action
-        for pause in self._pause('low'):
-            yield pause
-
-        for action in self._fire('mid-ext_and_top'):
-            yield action
-        for pause in self._pause('mid-ext_and_top'):
-            yield pause
-
-        for action in self._fire('mid-retract_and_top'):
-            yield action
-        for pause in self._pause('mid-retract_and_top'):
-            yield pause
-
-        for action in self._fire('lowlow'):
-            yield action
-        for pause in self._pause('lowlow'):
-            yield pause
+    def _wrapper(self, sequence):
+        for thing in sequence:
+            for action in self._fire(thing):
+                yield action
+            for pause in self._pause(thing):
+                yield pause
 
     def initialize(self):
-        for action in self._fire('low'):
-            yield action
-        for pause in self._pause('low'):
-            yield pause
+        sequence = ['low', 'mid-retract_and_top', 'release_mid_retract', 'lowlow']
 
-        for action in self._fire('mid-retract_and_top'):
-            yield action
-        for pause in self._pause('mid-retract_and_top'):
-            yield pause
-
-        for action in self._fire('release_mid_retract'):
-            yield action
-        for pause in self._pause('release_mid_retract'):
-            yield pause
-
-        for action in self._fire('lowlow'):
-            yield action
-        for pause in self._pause('lowlow'):
-            yield pause
+        for event in self._wrapper(sequence):
+            yield event
 
     def run(self):
-        while True:
-            try:
-                for event in self._wrapper():
-                    yield event
-            except KeyboardInterrupt:
-                self.logger.info('...user exit received...')
-                break
+        sequence = ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow']
+
+        for event in self._wrapper(sequence):
+            yield event
