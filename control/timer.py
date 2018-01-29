@@ -79,12 +79,22 @@ class Timer(object):
 
     def __init__(self):
         self.logger = self._initialize_logger()
+        self.sequences = self._set_sequences()
 
     def _initialize_logger(self):
         logger = logging.getLogger('timer')
         logger.info('timer logger instantiated')
 
         return logger
+
+    def _set_sequences(self):
+        sequences = {
+            'initialize': self.initialize,
+            'run': self.run,
+            'shutdown': self.shutdown
+        }
+
+        return sequences
 
     def _get_pause(self, pause):
         return datetime.now() + pause
