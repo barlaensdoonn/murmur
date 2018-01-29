@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 1/25/18
+# updated: 1/29/18
 
 import time
 import logging
@@ -157,3 +157,6 @@ class Timer(object):
 
         for event in self._wrapper(sequence):
             yield event
+
+    def debugger(self):
+        print('just checking')
