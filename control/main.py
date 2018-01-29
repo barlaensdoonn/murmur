@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 1/16/18
+# updated: 1/29/18
 
 import os
+import sys
 import time
 import yaml
 import socket
@@ -58,6 +59,37 @@ def configure_logger(hostname):
     return _initialize_logger()
 
 
+def quit():
+    logger.info('quitting program...')
+    sys.exit()
+
+
+def run_sequence(sequence):
+    logger.info('running sequence {}'.format(sequence))
+
+    try:
+        for event in timer.sequences[sequence]():
+            if event:
+                action = event
+                host = '{}.local'.format(get_host_by_arm(action[0]))
+                msg = Message(*action)
+                sender.send_msg(host, msg.msg)
+
+        logger.info('done running sequence {}'.format(sequence))
+        return None
+    except socket.gaierror:
+        logger.error('unable to connect to host {}'.format(host))
+        logger.error('sleeping for 1 minute, then trying again')
+        time.sleep(60)
+    except KeyboardInterrupt:
+        logger.info('''...user exit received...''')
+        quit()
+    except Exception:
+        logger.exception('exception!!')
+        logger.error('sleeping for 1 minute, then trying again')
+        time.sleep(60)
+
+
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
@@ -67,50 +99,7 @@ if __name__ == '__main__':
     running = True
 
     while initializing:
-        logger.info('initializing sculpture')
-
-        try:
-            for event in timer.initialize():
-                if event:
-                    action = event
-                    host = '{}.local'.format(get_host_by_arm(action[0]))
-                    msg = Message(*action)
-                    sender.send_msg(host, msg.msg)
-
-            initializing = False
-            logger.info('done intializing sculpture')
-        except socket.gaierror:
-            logger.error('unable to connect to host {}'.format(host))
-            logger.error('sleeping for 2 minutes, then trying again')
-            time.sleep(120)
-        except KeyboardInterrupt:
-            logger.info('''...user exit received...''')
-            initializing = False
-            break
-        except Exception:
-            logger.exception('exception!!')
-            logger.error('sleeping for 2 minutes, then trying again')
-            time.sleep(120)
+        initializing = run_sequence('initialize')
 
     while running:
-        logger.info('starting main sequence')
-
-        try:
-            for event in timer.run():
-                if event:
-                    action = event
-                    host = '{}.local'.format(get_host_by_arm(action[0]))
-                    msg = Message(*action)
-                    sender.send_msg(host, msg.msg)
-        except socket.gaierror:
-            logger.error('unable to connect to host {}'.format(host))
-            logger.error('sleeping for 2 minutes, then trying again')
-            time.sleep(120)
-        except KeyboardInterrupt:
-            logger.info('''...user exit received...''')
-            running = False
-            break
-        except Exception:
-            logger.exception('exception!!')
-            logger.error('sleeping for 2 minutes, then trying again')
-            time.sleep(120)
+        run_sequence('main_loop')

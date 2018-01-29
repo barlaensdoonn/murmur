@@ -90,7 +90,7 @@ class Timer(object):
     def _set_sequences(self):
         sequences = {
             'initialize': self.initialize,
-            'run': self.run,
+            'main_loop': self.run,
             'shutdown': self.shutdown
         }
 
@@ -146,7 +146,7 @@ class Timer(object):
         for event in self._wrapper(sequence):
             yield event
 
-    def run(self):
+    def main_loop(self):
         sequence = ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow']
 
         for event in self._wrapper(sequence):
