@@ -8,10 +8,19 @@ from kivy.app import App
 from kivy.uix.button import Button
 
 
-class ButtonsApp(App):
+class Buttons(object):
+
+    def __init__(self):
+        self.button = self._make_button('buttons', self.callback)
+
+    def _make_button(self, text, callback):
+        button = Button(text=text)
+        button.bind(on_press=callback)
+
+        return button
 
     def callback(self, instance):
-        print('button {} pressed'.format(instance))
+        print('button {} pressed'.format(instance.text))
 
     def build(self):
         button = Button(text='buttons')
@@ -20,5 +29,13 @@ class ButtonsApp(App):
         return button
 
 
+class MainApp(App):
+
+    def build(self):
+        buttons = Buttons()
+
+        return buttons.button
+
+
 if __name__ == '__main__':
-    ButtonsApp().run()
+    MainApp().run()
