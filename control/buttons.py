@@ -22,12 +22,6 @@ class Buttons(object):
     def callback(self, instance):
         print('button {} pressed'.format(instance.text))
 
-    def build(self):
-        button = Button(text='buttons')
-        button.bind(on_press=self.callback)
-
-        return button
-
 
 class MainApp(App):
 
