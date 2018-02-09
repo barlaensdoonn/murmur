@@ -10,8 +10,8 @@ from kivy.uix.button import Button
 
 class ButtonsApp(App):
 
-    def callback(self):
-        print('button pressed')
+    def callback(self, instance):
+        print('button {} pressed'.format(instance))
 
     def build(self):
         button = Button(text='buttons')
