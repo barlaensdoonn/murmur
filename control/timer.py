@@ -90,7 +90,7 @@ class Timer(object):
     def _set_sequences(self):
         sequences = {
             'initialize': self.initialize,
-            'main_loop': self.run,
+            'main_loop': self.main_loop,
             'shutdown': self.shutdown
         }
 
