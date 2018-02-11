@@ -135,28 +135,23 @@ class Timer(object):
 
     def _wrapper(self, sequence):
         for thing in sequence:
-            for action in self._fire(thing):
-                yield action
-            for pause in self._pause(thing):
-                yield pause
+            yield from self._fire(thing)
+            yield from self._pause(thing)
 
     def initialize(self):
         sequence = ['low', 'mid-retract_and_top', 'lowlow']
 
-        for event in self._wrapper(sequence):
-            yield event
+        yield from self._wrapper(sequence)
 
     def main_loop(self):
         sequence = ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow']
 
-        for event in self._wrapper(sequence):
-            yield event
+        yield from self._wrapper(sequence)
 
     def shutdown(self):
         sequence = ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
 
-        for event in self._wrapper(sequence):
-            yield event
+        yield from self._wrapper(sequence)
 
     def debugger(self):
         print('just checking')
