@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 1/29/18
+# updated: 2/11/18
 
 import time
 import logging
@@ -89,9 +89,9 @@ class Timer(object):
 
     def _set_sequences(self):
         sequences = {
-            'initialize': self.initialize,
-            'main_loop': self.main_loop,
-            'shutdown': self.shutdown
+            'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
+            'main_loop': ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow'],
+            'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
         }
 
         return sequences
@@ -138,20 +138,10 @@ class Timer(object):
             yield from self._fire(thing)
             yield from self._pause(thing)
 
-    def initialize(self):
-        sequence = ['low', 'mid-retract_and_top', 'lowlow']
+    def run(self, sequence):
+        seq = self.sequences[sequence]
 
-        yield from self._wrapper(sequence)
-
-    def main_loop(self):
-        sequence = ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow']
-
-        yield from self._wrapper(sequence)
-
-    def shutdown(self):
-        sequence = ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
-
-        yield from self._wrapper(sequence)
+        yield from self._wrapper(seq)
 
     def debugger(self):
         print('just checking')

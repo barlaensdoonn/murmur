@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 1/29/18
+# updated: 2/11/18
 
 import os
 import sys
@@ -68,7 +68,7 @@ def run_sequence(sequence):
     logger.info('running sequence {}'.format(sequence))
 
     try:
-        for event in timer.sequences[sequence]():
+        for event in timer.run(sequence):
             if event:
                 action = event
                 host = '{}.local'.format(get_host_by_arm(action[0]))
