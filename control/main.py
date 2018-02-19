@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 2/11/18
+# updated: 2/19/18
 
 import os
 import sys
@@ -11,7 +11,7 @@ import socket
 import logging
 import logging.config
 from timer import Timer
-from send import Message, Sender
+from send import NodeMessage, Sender
 
 
 basepath = '/home/pi/gitbucket/murmur/control'
@@ -72,7 +72,7 @@ def run_sequence(sequence):
             if event:
                 action = event
                 host = '{}.local'.format(get_host_by_arm(action[0]))
-                msg = Message(*action)
+                msg = NodeMessage(*action)
                 sender.send_msg(host, msg.msg)
 
         logger.info('done running sequence {}'.format(sequence))
@@ -93,7 +93,7 @@ def run_sequence(sequence):
 if __name__ == '__main__':
     hostname = get_hostname()
     logger = configure_logger(hostname)
-    sender = Sender()
+    sender = Sender(__name__)
     timer = Timer()
     initializing = True
     running = True
