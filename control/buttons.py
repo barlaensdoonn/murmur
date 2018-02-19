@@ -3,11 +3,36 @@
 # 1/27/18
 # updated: 2/11/18
 
+from socket import *
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle
+
+
+class Communicate(object):
+
+    def __init__(self, msg):
+        self.hostport = ('127.0.0.1', 9999)
+        self.msg = self._encode(msg)
+
+    def _encode(self, msg):
+        return '{}\r\n'.format(msg).encode()
+
+    def _context_client(self):
+        with socket(AF_INET, SOCK_STREAM) as client:
+            client.connect(self.hostport)
+            client.sendall(self.msg)
+            response = client.recv(1024)
+
+            return response.decode().strip()
+
+    def send(self):
+        sent = self._context_client()
+
+        if sent == self.msg.decode().strip():
+            print('message "{}"" sent successfully'.format(sent))
 
 
 class ButtonsLayout(GridLayout):
@@ -50,6 +75,8 @@ class ButtonsLayout(GridLayout):
 
     def callback(self, instance):
         print('button {} pressed'.format(instance.text))
+        msg = Communicate(instance.text)
+        msg.send()
 
     def change_text(self, instance):
         self.callback(instance)
