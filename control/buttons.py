@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 2/11/18
+# updated: 2/19/18
 
 from socket import *
 from kivy.app import App
