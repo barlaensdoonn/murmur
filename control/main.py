@@ -86,8 +86,8 @@ def run_sequence(sequence):
         quit()
     except Exception:
         logger.exception('exception!!')
-        logger.error('sleeping for 1 minute, then trying again')
-        time.sleep(60)
+        logger.error('encountered error, shutting down')
+        sys.exit()
 
 
 if __name__ == '__main__':
