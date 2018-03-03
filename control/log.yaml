@@ -33,10 +33,6 @@ loggers:
         level: INFO
         handlers: [file]
         propogate: False
-    shutdown:
-        level: INFO
-        handlers: [file]
-        propogate: False
 
 root:
     level: INFO
