@@ -3,7 +3,9 @@
 # 1/27/18
 # updated: 3/2/18
 
+import sys
 from kivy.app import App
+from kivy.logger import Logger
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
@@ -16,11 +18,19 @@ class ButtonsLayout(GridLayout):
 
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
+        self.logger = self._initialize_logger()
         self.button_props = self._setup_buttons()
         self.start_button = self._make_button('start')
         self.pause_button = self._make_button('pause')
         self.stop_button = self._make_button('stop')
-        self.sender = Sender(__name__)
+        self.state = 'start'
+        self._write_state()
+
+    def _initialize_logger(self):
+        Logger.info('* * * * * * * * * * * * * * * * * * * *')
+        Logger.info('kivy logger instantiated')
+
+        return Logger
 
     def _setup_buttons(self):
         '''setup button properties'''
@@ -29,7 +39,7 @@ class ButtonsLayout(GridLayout):
             'start': {
                 'type': Button,
                 'color': [0.2, 0.8, 0.2, 1],
-                'callback': self.callback
+                'callback': self.pressed
             },
             'pause': {
                 'type': ToggleButton,
@@ -39,7 +49,7 @@ class ButtonsLayout(GridLayout):
             'stop': {
                 'type': Button,
                 'color': [0.88, 0.2, 0.2, 1],
-                'callback': self.callback
+                'callback': self.pressed
             }
         }
 
@@ -48,26 +58,34 @@ class ButtonsLayout(GridLayout):
     def _make_button(self, text):
         button = self.button_props[text]['type'](text=text.upper(), background_normal='', background_color=self.button_props[text]['color'])
         button.bind(on_press=self.button_props[text]['callback'])
+        self.logger.info('{} button created'.format(text))
 
         return button
 
-    def _write_state(self, state):
-        with open(self.state_file, 'w') as fyle:
-            fyle.write(f'{state.lower()}\n')
+    def _write_state(self):
+        self.logger.info("writing state '{}' to file".format(self.state))
 
-    def callback(self, instance):
+        with open(self.state_file, 'w') as fyle:
+            fyle.write('{}\n'.format(self.state))
+
+    def pressed(self, instance):
         '''
         initially tried sending socket messages using our send.py module, i.e.:
         self.sender.send_msg('127.0.0.1', instance.text)
 
-        this code works fine, but haven't been able to implement it concurrently in main.py
+        this code works fine, but so far unable to implement it concurrently in main.py
         '''
 
-        print('button {} pressed'.format(instance.text))
-        self._write_state(instance.text)
+        self.logger.info('{} button pressed'.format(instance.text))
+        self.state = instance.text.lower()
+        self.logger.info("set state to '{}'".format(self.state))
+        self._write_state()
+
+        if instance.text == 'STOP':
+            sys.exit()
 
     def change_text(self, instance):
-        self.callback(instance)
+        self.pressed(instance)
         self.pause_button.text = 'RESUME' if instance.text == 'PAUSE' else 'PAUSE'
 
 
