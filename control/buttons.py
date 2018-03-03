@@ -1,17 +1,18 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 2/19/18
+# updated: 3/2/18
 
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle
-from send import Sender
 
 
 class ButtonsLayout(GridLayout):
+
+    state_file = 'state.txt'
 
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
@@ -50,9 +51,20 @@ class ButtonsLayout(GridLayout):
 
         return button
 
+    def _write_state(self, state):
+        with open(self.state_file, 'w') as fyle:
+            fyle.write(f'{state.lower()}\n')
+
     def callback(self, instance):
-        print('button {} pressed'.format(instance.text))
+        '''
+        initially tried sending socket messages using our send.py module, i.e.:
         self.sender.send_msg('127.0.0.1', instance.text)
+
+        this code works fine, but haven't been able to implement it concurrently in main.py
+        '''
+
+        print('button {} pressed'.format(instance.text))
+        self._write_state(instance.text)
 
     def change_text(self, instance):
         self.callback(instance)
