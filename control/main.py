@@ -87,7 +87,7 @@ def run_sequence(sequence):
     except Exception:
         logger.exception('exception!!')
         logger.error('encountered error, shutting down')
-        sys.exit()
+        quit()
 
 
 if __name__ == '__main__':
