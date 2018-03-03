@@ -83,7 +83,7 @@ def run_sequence(sequence):
         time.sleep(60)
     except ConnectionRefusedError:
         logger.error('connection refused when trying to send message to host {}'.format(host))
-        logger.error('{} possibly not running its main node program')
+        logger.error('{} possibly not running its main node program'.format(host))
         quit()
     except KeyboardInterrupt:
         logger.info('''...user exit received...''')
