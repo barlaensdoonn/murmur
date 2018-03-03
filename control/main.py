@@ -81,12 +81,16 @@ def run_sequence(sequence):
         logger.error('unable to connect to host {}'.format(host))
         logger.error('sleeping for 1 minute, then trying again')
         time.sleep(60)
+    except ConnectionRefusedError:
+        logger.error('connection refused when trying to send message to host {}'.format(host))
+        logger.error('{} possibly not running its main node program')
+        quit()
     except KeyboardInterrupt:
         logger.info('''...user exit received...''')
         quit()
     except Exception:
         logger.exception('exception!!')
-        logger.error('encountered error, shutting down')
+        logger.error('unexpected exception, shutting down')
         quit()
 
 
