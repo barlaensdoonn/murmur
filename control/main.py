@@ -12,7 +12,6 @@ import logging
 import logging.config
 from timer import Timer
 from send import NodeMessage, Sender
-# from buttons import state_file
 
 host_arm_map = {
     'murmur01': ['A', 'B', 'C'],
@@ -91,13 +90,48 @@ def run_sequence(sequence):
         logger.info('''...user exit received...''')
         quit()
     except Exception:
-        logger.exception('exception!!')
-        logger.error('unexpected exception, shutting down')
+        logger.exception('unexpected exception!!')
         quit()
+
+
+class State:
+
+    state_file = 'state.txt'
+
+    states = {
+        'pause': None,
+        'resume': 'continue',
+        'start': ['initialize', 'main_loop'],
+        'stop': 'shutdown'
+    }
+
+    def __init__(self, logger):
+        self.logger = logger
+        self.state = self._read_state_file()
+        self.past_state = None
+
+    def _read_state_file(self):
+        with open(self.state_file, 'r') as fyle:
+            return fyle.read().strip(' \n')
+
+    def _register_state_change(self, current):
+        self.past_state = self.state
+        self.state = current
+
+    def check_state(self):
+        current = self._read_state_file()
+
+        if current != self.state:
+            self.logger('state change registered from {} to {}'.format(self.state, current))
+            self._register_state_change(current)
+            return self.state
+        else:
+            return None
 
 
 if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
+    state = State(logger)
     sender = Sender(__name__)
     timer = Timer()
     initializing = True
