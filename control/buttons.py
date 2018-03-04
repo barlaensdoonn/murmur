@@ -3,13 +3,14 @@
 # 1/27/18
 # updated: 3/2/18
 
-import sys
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle
+from functools import partial
 
 
 class ButtonsLayout(GridLayout):
@@ -23,7 +24,8 @@ class ButtonsLayout(GridLayout):
         self.start_button = self._make_button('start')
         self.pause_button = self._make_button('pause')
         self.stop_button = self._make_button('stop')
-        self.state = 'start'
+        self.buttons = (self.start_button, self.pause_button, self.stop_button)
+        self.state = 'stop'
         self._write_state()
 
     def _initialize_logger(self):
@@ -39,17 +41,17 @@ class ButtonsLayout(GridLayout):
             'start': {
                 'type': Button,
                 'color': [0.2, 0.8, 0.2, 1],
-                'callback': self.pressed
+                'disabled': False
             },
             'pause': {
                 'type': ToggleButton,
                 'color': [0.7, 0.7, 0.7, 1],
-                'callback': self.change_text
+                'disabled': True
             },
             'stop': {
                 'type': Button,
                 'color': [0.88, 0.2, 0.2, 1],
-                'callback': self.pressed
+                'disabled': True
             }
         }
 
@@ -57,7 +59,7 @@ class ButtonsLayout(GridLayout):
 
     def _make_button(self, text):
         button = self.button_props[text]['type'](text=text.upper(), background_normal='', background_color=self.button_props[text]['color'])
-        button.bind(on_press=self.button_props[text]['callback'])
+        button.bind(on_press=self.pressed)
         self.logger.info('{} button created'.format(text))
 
         return button
@@ -68,6 +70,20 @@ class ButtonsLayout(GridLayout):
         with open(self.state_file, 'w') as fyle:
             fyle.write('{}\n'.format(self.state))
 
+    def _update_state(self, state):
+        self.state = state.lower()
+        self.logger.info("state updated to '{}'".format(self.state))
+        self._write_state()
+
+    def _change_text(self, text):
+        self.pause_button.text = 'RESUME' if text == 'PAUSE' else 'PAUSE'
+        self.logger.info("changed PAUSE button text to '{}'".format(self.pause_button.text))
+
+    def initialize_disabled(self, button, dt):
+        '''according to kivy dt stands for 'deltatime' and is needed for a Clock callback'''
+
+        button.disabled = self.button_props[button.text.lower()]['disabled']
+
     def pressed(self, instance):
         '''
         initially tried sending socket messages using our send.py module, i.e.:
@@ -77,16 +93,11 @@ class ButtonsLayout(GridLayout):
         '''
 
         self.logger.info('{} button pressed'.format(instance.text))
-        self.state = instance.text.lower()
-        self.logger.info("set state to '{}'".format(self.state))
-        self._write_state()
+        # instance.disabled = True
+        self._update_state(instance.text)
 
-        if instance.text == 'STOP':
-            sys.exit()
-
-    def change_text(self, instance):
-        self.pressed(instance)
-        self.pause_button.text = 'RESUME' if instance.text == 'PAUSE' else 'PAUSE'
+        if instance.text in ['PAUSE', 'RESUME']:
+            self._change_text(instance.text)
 
 
 class ButtonsApp(App):
@@ -99,11 +110,13 @@ class ButtonsApp(App):
             Color(.2, .2, .2, 1)
             self.rect = Rectangle(size=(800, 600), pos=layout.pos)
 
-            layout.add_widget(layout.start_button)
-            layout.add_widget(layout.pause_button)
-            layout.add_widget(layout.stop_button)
+            for button in layout.buttons:
+                layout.add_widget(button)
+                # since creating a button with disabled = True in ButtonsLayout didn't work,
+                # we schedule disabled to be set in the future after build returns
+                Clock.schedule_once(partial(layout.initialize_disabled, button), 0.1)
 
-            return layout
+        return layout
 
 
 if __name__ == '__main__':
