@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 2/19/18
+# updated: 3/4/18
 
 import os
 import sys
@@ -12,9 +12,7 @@ import logging
 import logging.config
 from timer import Timer
 from send import NodeMessage, Sender
-
-
-basepath = '/home/pi/gitbucket/murmur/control'
+# from buttons import state_file
 
 host_arm_map = {
     'murmur01': ['A', 'B', 'C'],
@@ -24,7 +22,7 @@ host_arm_map = {
 }
 
 
-def _get_logfile_name(hostname):
+def _get_logfile_name(basepath, hostname):
     '''format log file as "hostname.log"'''
 
     return os.path.join(basepath, '{hostname}.log'.format(hostname=hostname))
@@ -37,6 +35,10 @@ def _initialize_logger():
     return logger
 
 
+def get_basepath():
+    return os.path.dirname(os.path.realpath(__file__))
+
+
 def get_hostname():
     return socket.gethostname().split('.')[0]
 
@@ -47,11 +49,11 @@ def get_host_by_arm(arm):
             return host
 
 
-def configure_logger(hostname):
+def configure_logger(basepath, hostname):
     with open(os.path.join(basepath, 'log.yaml'), 'r') as log_conf:
         log_config = yaml.safe_load(log_conf)
 
-    log_config['handlers']['file']['filename'] = _get_logfile_name(hostname)
+    log_config['handlers']['file']['filename'] = _get_logfile_name(basepath, hostname)
     logging.config.dictConfig(log_config)
     logging.info('* * * * * * * * * * * * * * * * * * * *')
     logging.info('logging configured')
@@ -95,7 +97,7 @@ def run_sequence(sequence):
 
 
 if __name__ == '__main__':
-    logger = configure_logger(get_hostname())
+    logger = configure_logger(get_basepath(), get_hostname())
     sender = Sender(__name__)
     timer = Timer()
     initializing = True

@@ -13,10 +13,11 @@ from kivy.graphics import Color, Rectangle
 from functools import partial
 from collections import namedtuple
 
+state_file = 'state.txt'
+
 
 class ButtonsLayout(GridLayout):
 
-    state_file = 'state.txt'
     Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
 
     def __init__(self, **kwargs):
@@ -69,7 +70,7 @@ class ButtonsLayout(GridLayout):
     def _write_state(self):
         self.logger.info("writing state '{}' to file".format(self.state))
 
-        with open(self.state_file, 'w') as fyle:
+        with open(state_file, 'w') as fyle:
             fyle.write('{}\n'.format(self.state))
 
     def _update_state(self, state):
