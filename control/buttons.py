@@ -124,8 +124,10 @@ class ButtonsApp(App):
 
             for button in layout.buttons:
                 layout.add_widget(button)
+
                 # since creating a button with disabled = True in ButtonsLayout didn't work,
                 # we schedule disabled to be set in the future after build returns
+                # partial is used since the function itself must be passed as an argument
                 Clock.schedule_once(partial(layout.initialize_disabled, button), 0.1)
 
         return layout
