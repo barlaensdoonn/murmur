@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 3/2/18
+# updated: 3/3/18
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -14,18 +14,16 @@ from functools import partial
 from collections import namedtuple
 
 
-Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
-
-
 class ButtonsLayout(GridLayout):
 
     state_file = 'state.txt'
+    Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
 
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
         self.logger = self._initialize_logger()
         self.button_props = self._setup_buttons()
-        self.buttons = Buttons(*self._make_buttons())
+        self.buttons = self.Buttons(*self._make_buttons())
         self.state = 'stop'
         self._write_state()
 
@@ -66,7 +64,7 @@ class ButtonsLayout(GridLayout):
         return button
 
     def _make_buttons(self):
-        return tuple(self._make_button(name) for name in Buttons._fields)
+        return tuple(self._make_button(name) for name in self.Buttons._fields)
 
     def _write_state(self):
         self.logger.info("writing state '{}' to file".format(self.state))
@@ -110,8 +108,7 @@ class ButtonsLayout(GridLayout):
 
         if txt in ['PAUSE', 'RESUME']:
             self._change_text(txt)
-
-        if txt == 'START' or txt == 'STOP':
+        elif txt == 'START' or txt == 'STOP':
             self._flip_disableds()
 
 
