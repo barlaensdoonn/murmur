@@ -11,6 +11,10 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.graphics import Color, Rectangle
 from functools import partial
+from collections import namedtuple
+
+
+Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
 
 
 class ButtonsLayout(GridLayout):
@@ -21,6 +25,7 @@ class ButtonsLayout(GridLayout):
         super(ButtonsLayout, self).__init__(**kwargs)
         self.logger = self._initialize_logger()
         self.button_props = self._setup_buttons()
+        self.buttons = Buttons(*self._make_buttons())
         self.start_button = self._make_button('start')
         self.pause_button = self._make_button('pause')
         self.stop_button = self._make_button('stop')
@@ -64,6 +69,9 @@ class ButtonsLayout(GridLayout):
 
         return button
 
+    def _make_buttons(self):
+        return tuple(self._make_button(name) for name in Buttons._fields)
+
     def _write_state(self):
         self.logger.info("writing state '{}' to file".format(self.state))
 
@@ -76,13 +84,21 @@ class ButtonsLayout(GridLayout):
         self._write_state()
 
     def _change_text(self, text):
-        self.pause_button.text = 'RESUME' if text == 'PAUSE' else 'PAUSE'
-        self.logger.info("changed PAUSE button text to '{}'".format(self.pause_button.text))
+        self.buttons.pause.text = 'RESUME' if text == 'PAUSE' else 'PAUSE'
+        self.logger.info("changed PAUSE button text to '{}'".format(self.buttons.pause.text))
+
+    def _set_disabled(self, button):
+        button.disabled = self.button_props[button.text.lower()]['disabled']
+
+    def _flip_disableds(self):
+        for key in self.button_props.keys():
+            self.button_props[key]['disabled'] = not self.button_props[key]['disabled']
+            self._set_disabled(getattr(self.buttons, key))
 
     def initialize_disabled(self, button, dt):
         '''according to kivy dt stands for 'deltatime' and is needed for a Clock callback'''
 
-        button.disabled = self.button_props[button.text.lower()]['disabled']
+        self._set_disabled(button)
 
     def pressed(self, instance):
         '''
@@ -92,12 +108,15 @@ class ButtonsLayout(GridLayout):
         this code works fine, but so far unable to implement it concurrently in main.py
         '''
 
-        self.logger.info('{} button pressed'.format(instance.text))
-        # instance.disabled = True
-        self._update_state(instance.text)
+        txt = instance.text
+        self.logger.info('{} button pressed'.format(txt))
+        self._update_state(txt)
 
-        if instance.text in ['PAUSE', 'RESUME']:
-            self._change_text(instance.text)
+        if txt in ['PAUSE', 'RESUME']:
+            self._change_text(txt)
+
+        if txt == 'START':
+            self._flip_disableds()
 
 
 class ButtonsApp(App):
