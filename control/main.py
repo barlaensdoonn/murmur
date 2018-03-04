@@ -65,11 +65,14 @@ def quit():
     sys.exit()
 
 
-def run_sequence(sequence):
+def run_sequence(watchdog, sequence):
     logger.info('running sequence {}'.format(sequence))
 
     try:
         for event in timer.run(sequence):
+
+            watchdog.check_state()
+
             if event:
                 action = event
                 host = '{}.local'.format(get_host_by_arm(action[0]))
@@ -94,13 +97,11 @@ def run_sequence(sequence):
         quit()
 
 
-class State:
+class Watchdog:
 
     state_file = 'state.txt'
 
     states = {
-        'pause': None,
-        'resume': 'continue',
         'start': ['initialize', 'main_loop'],
         'stop': 'shutdown'
     }
@@ -109,6 +110,7 @@ class State:
         self.logger = logger
         self.state = self._read_state_file()
         self.past_state = None
+        self.logger.info('watchdog initialized with state {}'.format(self.state.upper()))
 
     def _read_state_file(self):
         with open(self.state_file, 'r') as fyle:
@@ -118,12 +120,30 @@ class State:
         self.past_state = self.state
         self.state = current
 
+    def _pause(self):
+        self.logger.info('pausing program...')
+
+        while True:
+            if self.check_state():
+                break
+            else:
+                time.sleep(0.1)
+
+    def _handle_state_change(self):
+        if self.state == 'pause':
+            self._pause()
+        elif self.state == 'resume':
+            self.logger.info('resuming regularly scheduled programming')
+        else:
+            pass
+
     def check_state(self):
         current = self._read_state_file()
 
-        if current != self.state:
-            self.logger('state change registered from {} to {}'.format(self.state, current))
+        if current != self.state and current:
+            self.logger.info('state change registered from {} to {}'.format(self.state.upper(), current.upper()))
             self._register_state_change(current)
+            self._handle_state_change()
             return self.state
         else:
             return None
@@ -131,14 +151,14 @@ class State:
 
 if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
-    state = State(logger)
+    watchdog = Watchdog(logger)
     sender = Sender(__name__)
     timer = Timer()
     initializing = True
     running = True
 
     while initializing:
-        initializing = run_sequence('initialize')
+        initializing = run_sequence(watchdog, 'initialize')
 
     while running:
-        run_sequence('main_loop')
+        run_sequence(watchdog, 'main_loop')
