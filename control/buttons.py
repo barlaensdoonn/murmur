@@ -111,7 +111,7 @@ class ButtonsLayout(GridLayout):
         if txt in ['PAUSE', 'RESUME']:
             self._change_text(txt)
 
-        if txt == 'START':
+        if txt == 'START' or txt == 'STOP':
             self._flip_disableds()
 
 
