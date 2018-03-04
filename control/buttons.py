@@ -26,10 +26,6 @@ class ButtonsLayout(GridLayout):
         self.logger = self._initialize_logger()
         self.button_props = self._setup_buttons()
         self.buttons = Buttons(*self._make_buttons())
-        self.start_button = self._make_button('start')
-        self.pause_button = self._make_button('pause')
-        self.stop_button = self._make_button('stop')
-        self.buttons = (self.start_button, self.pause_button, self.stop_button)
         self.state = 'stop'
         self._write_state()
 
