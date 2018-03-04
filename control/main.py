@@ -95,8 +95,7 @@ def run_sequence(sequence):
 
 
 if __name__ == '__main__':
-    hostname = get_hostname()
-    logger = configure_logger(hostname)
+    logger = configure_logger(get_hostname())
     sender = Sender(__name__)
     timer = Timer()
     initializing = True
