@@ -110,13 +110,14 @@ def run_sequence(watchdog, sequence_list):
 
 def run(watchdog):
     '''
-    at the top of the loop run waits for a 'start' or 'stop' signal before doing anything.
+    at the top of the loop we wait for a 'start' or 'stop' signal before doing anything.
     on 'start' we run 'initialize' sequence, then run 'main_loop' indefinitely
-    until 'stop' is received, at which point it should run the 'shutdown' sequence.
+    until 'stop' is received, at which point we run the 'shutdown' sequence.
 
-    the Watchdog class has a class variable 'state_maps' that maps the states 'start' and 'stop'
-    to sequence lists, which are passed to run_sequence from here. they're also used in run_sequence
-    to break out of the currently running sequence if state changes from 'start' to 'stop' or vice versa
+    the Watchdog class has a class variable 'state_maps' that maps the states
+    'start' and 'stop' to sequence lists, which are passed to run_sequence from here.
+    'state_maps' is also used in run_sequence to break out of the currently running sequence
+    if a state change of 'start' or 'stop' is registered
     '''
 
     while True:
