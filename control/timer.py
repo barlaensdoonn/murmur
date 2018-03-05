@@ -5,7 +5,6 @@
 
 import time
 import logging
-import logging.config
 from datetime import datetime, timedelta
 
 

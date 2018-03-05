@@ -8,6 +8,10 @@ import logging
 
 
 class Watchdog:
+    '''
+    state_file is the file updated by buttons.py when touchscreen buttons are pressed.
+    state_map maps 'start' and 'stop' states to sequence lists for run and run_sequence in main.py
+    '''
 
     state_file = 'state.txt'
 
@@ -19,7 +23,7 @@ class Watchdog:
     def __init__(self):
         self.logger = self._initialize_logger()
         self.state = self._read_state_file()
-        self.logger.info('watchdog initialized with state {}'.format(self.state.upper()))
+        self.logger.info(f'watchdog initialized with state {self.state.upper()}')
 
     def _initialize_logger(self):
         logger = logging.getLogger('watchdog')
@@ -32,6 +36,7 @@ class Watchdog:
             return fyle.read().strip(' \n')
 
     def _register_state_change(self, current):
+        self.logger.info('state change registered from {} to {}'.format(self.state.upper(), current.upper()))
         self.state = current
 
     def _pause(self):
@@ -57,7 +62,6 @@ class Watchdog:
         current = self._read_state_file()
 
         if current and current != self.state:
-            self.logger.info('state change registered from {} to {}'.format(self.state.upper(), current.upper()))
             self._handle_state_change(current)
             return self.state
         else:

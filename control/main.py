@@ -25,7 +25,7 @@ host_arm_map = {
 def _get_logfile_name(basepath, hostname):
     '''format log file as "hostname.log"'''
 
-    return os.path.join(basepath, '{hostname}.log'.format(hostname=hostname))
+    return os.path.join(basepath, f'{hostname}.log')
 
 
 def _initialize_logger():
@@ -66,18 +66,27 @@ def quit():
     sys.exit()
 
 
-def run_sequence(watchdog, sequence):
-    logger.info('running sequence {}'.format(sequence))
+def run_sequence(watchdog, sequence_list):
+    '''
+    we use the Watchdog class variable state_maps to break out of the loop if necessary:
+
+    if the state is updated and it's one we're interested in (either 'start' or 'stop'),
+    and the current sequence is not in the new state's sequence list in watchdog.state_maps,
+    stop current sequence by returning the sequence list to be run next
+    '''
+
+    # pop 'initialize' off front of copied list so we don't run it again until next time START button is pressed
+    safe_list = sequence_list[:]
+    sequence = safe_list.pop(0) if len(safe_list) > 1 else safe_list[0]
 
     try:
+        logger.info(f"running sequence '{sequence}'")
         for event in timer.run(sequence):
 
-            # if the state is updated and it's one we're interested in (either 'start' or 'stop'),
-            # and the current sequence is not in the new state's sequences list,
-            # stop current sequence by returning the sequence(s) to be run next
+            # NOTE: refer to docstring for explanation of this block
             if watchdog.check_state() and watchdog.state in watchdog.state_map.keys():
                 if sequence not in watchdog.state_map[watchdog.state]:
-                    print('returning {}'.format(watchdog.state_map[watchdog.state]))
+                    logger.info(f"breaking out of sequence '{sequence}'")
                     return watchdog.state_map[watchdog.state]
 
             if event:
@@ -86,48 +95,52 @@ def run_sequence(watchdog, sequence):
                 msg = NodeMessage(*action)
                 sender.send_msg(host, msg.msg)
 
-        logger.info('done running sequence {}'.format(sequence))
-        return None
+        logger.info(f"done running sequence '{sequence}'")
+        return safe_list if 'shutdown' not in safe_list else None
+
     except socket.gaierror:
-        logger.error('unable to connect to host {}'.format(host))
+        logger.error(f'unable to connect to host {host}')
         logger.error('sleeping for 1 minute, then trying again')
         time.sleep(60)
     except ConnectionRefusedError:
-        logger.error('connection refused when trying to send message to host {}'.format(host))
-        logger.error('{} possibly not running its main node program'.format(host))
-        quit()
-    except KeyboardInterrupt:
-        logger.info('''...user exit received...''')
-        quit()
-    except Exception:
-        logger.exception('unexpected exception!!')
+        logger.error(f'connection refused when trying to send message to host {host}')
+        logger.error(f'{host} possibly not running its main node program')
         quit()
 
 
 def run(watchdog):
     '''
-    when first launched the run loop should wait for a 'start' or 'stop' signal before doing anything.
-    on 'start' we should run 'initialize' sequence, then run 'main_loop' indefinitely until 'stop' is received,
-    at which point it should run the 'shutdown' sequence.
-    'pause' and 'resume' are currently handled within the Watchdog class
+    at the top of the loop run waits for a 'start' or 'stop' signal before doing anything.
+    on 'start' we run 'initialize' sequence, then run 'main_loop' indefinitely
+    until 'stop' is received, at which point it should run the 'shutdown' sequence.
+
+    the Watchdog class has a class variable 'state_maps' that maps the states 'start' and 'stop'
+    to sequence lists, which are passed to run_sequence from here. they're also used in run_sequence
+    to break out of the currently running sequence if state changes from 'start' to 'stop' or vice versa
     '''
 
-    while watchdog.check_state() not in watchdog.state_map.keys():
-        time.sleep(0.1)
+    while True:
+        try:
+            logger.info('waiting for input from touchscreen...')
+            while watchdog.check_state() not in watchdog.state_map.keys():
+                time.sleep(0.1)
 
+            running = watchdog.state_map[watchdog.state]
+
+            while running:
+                running = run_sequence(watchdog, running)
+
+        except KeyboardInterrupt:
+            logger.info('''...user exit received...''')
+            quit()
+        except Exception:
+            logger.exception('unexpected exception!!')
+            quit()
 
 if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
     watchdog = Watchdog()
     sender = Sender(__name__)
     timer = Timer()
-    initializing = True
-    running = True
 
     run(watchdog)
-
-    while initializing:
-        initializing = run_sequence(watchdog, 'initialize')
-
-    while running:
-        run_sequence(watchdog, 'main_loop')
