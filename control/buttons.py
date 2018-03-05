@@ -81,6 +81,10 @@ class ButtonsLayout(GridLayout):
         self.buttons.pause.text = 'RESUME' if text == 'PAUSE' else 'PAUSE'
         self.logger.info("changed PAUSE button text to '{}'".format(self.buttons.pause.text))
 
+    def _reset_pause_text(self):
+        self.buttons.pause.text = 'PAUSE'
+        self.logger.info("reset PAUSE button text to 'PAUSE'")
+
     def _set_disabled(self, button):
         bttn_txt = 'pause' if button.text == 'RESUME' else button.text.lower()
         button.disabled = self.button_props[bttn_txt]['disabled']
@@ -110,8 +114,10 @@ class ButtonsLayout(GridLayout):
 
         if txt in ['PAUSE', 'RESUME']:
             self._change_text(txt)
-        elif txt == 'START' or txt == 'STOP':
+        else:
             self._flip_disableds()
+            if txt == 'STOP':
+                self._reset_pause_text()
 
 
 class ButtonsApp(App):
