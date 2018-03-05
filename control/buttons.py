@@ -96,7 +96,7 @@ class ButtonsLayout(GridLayout):
             self._set_disabled(getattr(self.buttons, key))
 
     def initialize_disabled(self, button, dt):
-        '''according to kivy dt stands for 'deltatime' and is needed for a Clock callback'''
+        '''according to kivy, 'dt' stands for 'deltatime' and is needed for a Clock callback'''
 
         self._set_disabled(button)
 
