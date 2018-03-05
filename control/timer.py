@@ -132,15 +132,9 @@ class Timer(object):
                             time.sleep(0.1)
                     break
 
-    def _wrapper(self, sequence):
-        for thing in sequence:
-            yield from self._fire(thing)
-            yield from self._pause(thing)
-
     def run(self, sequence):
         seq = self.sequences[sequence]
 
-        yield from self._wrapper(seq)
-
-    def debugger(self):
-        print('just checking')
+        for thing in seq:
+            yield from self._fire(thing)
+            yield from self._pause(thing)
