@@ -29,6 +29,10 @@ loggers:
         level: INFO
         handlers: [file]
         propogate: False
+    watchdog:
+        level: INFO
+        handlers: [file]
+        propogate: False
     main:
         level: INFO
         handlers: [file]

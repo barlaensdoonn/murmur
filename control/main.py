@@ -12,6 +12,7 @@ import logging
 import logging.config
 from timer import Timer
 from send import NodeMessage, Sender
+from watchdog import Watchdog
 
 host_arm_map = {
     'murmur01': ['A', 'B', 'C'],
@@ -71,7 +72,13 @@ def run_sequence(watchdog, sequence):
     try:
         for event in timer.run(sequence):
 
-            watchdog.check_state()
+            # if the state is updated and it's one we're interested in (either 'start' or 'stop'),
+            # and the current sequence is not in the new state's sequences list,
+            # stop current sequence by returning the sequence(s) to be run next
+            if watchdog.check_state() and watchdog.state in watchdog.state_map.keys():
+                if sequence not in watchdog.state_map[watchdog.state]:
+                    print('returning {}'.format(watchdog.state_map[watchdog.state]))
+                    return watchdog.state_map[watchdog.state]
 
             if event:
                 action = event
@@ -97,65 +104,27 @@ def run_sequence(watchdog, sequence):
         quit()
 
 
-class Watchdog:
+def run(watchdog):
+    '''
+    when first launched the run loop should wait for a 'start' or 'stop' signal before doing anything.
+    on 'start' we should run 'initialize' sequence, then run 'main_loop' indefinitely until 'stop' is received,
+    at which point it should run the 'shutdown' sequence.
+    'pause' and 'resume' are currently handled within the Watchdog class
+    '''
 
-    state_file = 'state.txt'
-
-    states = {
-        'start': ['initialize', 'main_loop'],
-        'stop': 'shutdown'
-    }
-
-    def __init__(self, logger):
-        self.logger = logger
-        self.state = self._read_state_file()
-        self.past_state = None
-        self.logger.info('watchdog initialized with state {}'.format(self.state.upper()))
-
-    def _read_state_file(self):
-        with open(self.state_file, 'r') as fyle:
-            return fyle.read().strip(' \n')
-
-    def _register_state_change(self, current):
-        self.past_state = self.state
-        self.state = current
-
-    def _pause(self):
-        self.logger.info('pausing program...')
-
-        while True:
-            if self.check_state():
-                break
-            else:
-                time.sleep(0.1)
-
-    def _handle_state_change(self):
-        if self.state == 'pause':
-            self._pause()
-        elif self.state == 'resume':
-            self.logger.info('resuming regularly scheduled programming')
-        else:
-            pass
-
-    def check_state(self):
-        current = self._read_state_file()
-
-        if current != self.state and current:
-            self.logger.info('state change registered from {} to {}'.format(self.state.upper(), current.upper()))
-            self._register_state_change(current)
-            self._handle_state_change()
-            return self.state
-        else:
-            return None
+    while watchdog.check_state() not in watchdog.state_map.keys():
+        time.sleep(0.1)
 
 
 if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
-    watchdog = Watchdog(logger)
+    watchdog = Watchdog()
     sender = Sender(__name__)
     timer = Timer()
     initializing = True
     running = True
+
+    run(watchdog)
 
     while initializing:
         initializing = run_sequence(watchdog, 'initialize')

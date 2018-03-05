@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 3/3/18
+# updated: 3/4/18
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -13,11 +13,10 @@ from kivy.graphics import Color, Rectangle
 from functools import partial
 from collections import namedtuple
 
-state_file = 'state.txt'
-
 
 class ButtonsLayout(GridLayout):
 
+    state_file = 'state.txt'
     Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
 
     def __init__(self, **kwargs):
@@ -25,7 +24,7 @@ class ButtonsLayout(GridLayout):
         self.logger = self._initialize_logger()
         self.button_props = self._setup_buttons()
         self.buttons = self.Buttons(*self._make_buttons())
-        self.state = 'stop'
+        self.state = 'pause'
         self._write_state()
 
     def _initialize_logger(self):
@@ -70,7 +69,7 @@ class ButtonsLayout(GridLayout):
     def _write_state(self):
         self.logger.info("writing state '{}' to file".format(self.state))
 
-        with open(state_file, 'w') as fyle:
+        with open(self.state_file, 'w') as fyle:
             fyle.write('{}\n'.format(self.state))
 
     def _update_state(self, state):
@@ -83,10 +82,12 @@ class ButtonsLayout(GridLayout):
         self.logger.info("changed PAUSE button text to '{}'".format(self.buttons.pause.text))
 
     def _set_disabled(self, button):
-        button.disabled = self.button_props[button.text.lower()]['disabled']
+        bttn_txt = 'pause' if button.text == 'RESUME' else button.text.lower()
+        button.disabled = self.button_props[bttn_txt]['disabled']
 
     def _flip_disableds(self):
         for key in self.button_props.keys():
+            key = 'pause' if key == 'resume' else key
             self.button_props[key]['disabled'] = not self.button_props[key]['disabled']
             self._set_disabled(getattr(self.buttons, key))
 
