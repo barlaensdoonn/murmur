@@ -16,7 +16,7 @@ from collections import namedtuple
 
 class ButtonsLayout(GridLayout):
 
-    state_file = 'state.txt'
+    state_file = '/home/pi/gitbucket/murmur/control/state.txt'
     Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
 
     def __init__(self, **kwargs):

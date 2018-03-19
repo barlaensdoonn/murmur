@@ -23,7 +23,7 @@ class Watchdog:
     def __init__(self):
         self.logger = self._initialize_logger()
         self.state = self._read_state_file()
-        self.logger.info(f'watchdog initialized with state {self.state.upper()}')
+        self.logger.info('watchdog initialized with state {}'.format(self.state.upper()))
 
     def _initialize_logger(self):
         logger = logging.getLogger('watchdog')

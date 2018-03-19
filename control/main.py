@@ -25,7 +25,7 @@ host_arm_map = {
 def _get_logfile_name(basepath, hostname):
     '''format log file as "hostname.log"'''
 
-    return os.path.join(basepath, f'{hostname}.log')
+    return os.path.join(basepath, '{}.log'.format(hostname))
 
 
 def _initialize_logger():
@@ -80,13 +80,13 @@ def run_sequence(watchdog, sequence_list):
     sequence = safe_list.pop(0) if len(safe_list) > 1 else safe_list[0]
 
     try:
-        logger.info(f"running sequence '{sequence}'")
+        logger.info("running sequence '{}'".format(sequence))
         for event in timer.run(sequence):
 
             # NOTE: refer to docstring for explanation of this block
             if watchdog.check_state() and watchdog.state in watchdog.state_map.keys():
                 if sequence not in watchdog.state_map[watchdog.state]:
-                    logger.info(f"breaking out of sequence '{sequence}'")
+                    logger.info("breaking out of sequence '{}'".format(sequence))
                     return watchdog.state_map[watchdog.state]
 
             if event:
@@ -95,16 +95,16 @@ def run_sequence(watchdog, sequence_list):
                 msg = NodeMessage(*action)
                 sender.send_msg(host, msg.msg)
 
-        logger.info(f"done running sequence '{sequence}'")
+        logger.info("done running sequence '{}'".format(sequence))
         return safe_list if 'shutdown' not in safe_list else None
 
     except socket.gaierror:
-        logger.error(f'unable to connect to host {host}')
+        logger.error('unable to connect to host {}'.format(host))
         logger.error('sleeping for 1 minute, then trying again')
         time.sleep(60)
     except ConnectionRefusedError:
-        logger.error(f'connection refused when trying to send message to host {host}')
-        logger.error(f'{host} possibly not running its main node program')
+        logger.error('connection refused when trying to send message to host {}'.format(host))
+        logger.error('{} possibly not running its main node program'.format(host))
         quit()
 
 

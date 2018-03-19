@@ -65,7 +65,7 @@ class Sender(object):
             data = client.recv(1024)
 
             if data == encoded:
-                self.logger.debug('host {host} acknowledged message was received'.format(host=host))
+                self.logger.info('host {host} acknowledged message was received'.format(host=host))
 
     def send_msg(self, host, msg):
         self.logger.info('sending message "{msg}" to host {host}'.format(msg=msg, host=host))
