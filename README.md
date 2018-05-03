@@ -27,5 +27,5 @@ power supply connections to relay terminals:
 ```
 
 ## signal flow
-![node arm](murmur_signal_flow_node_arm.pdf)
-![non-node arm](murmur_signal_flow_non_node_arm.pdf)
+![node arm](murmur_signal_flow_node_arm.png)
+![non-node arm](murmur_signal_flow_non_node_arm.png)
