@@ -1,6 +1,11 @@
 # murmur
 
 ## dependencies
+#### *pyyaml*
+```
+sudo pip3 install pyyaml
+```
+
 #### *gpiozero*
 ```
 sudo apt-get update
