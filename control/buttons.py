@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 3/4/18
+# updated: 5/26/18
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -17,7 +17,7 @@ from collections import namedtuple
 class ButtonsLayout(GridLayout):
 
     state_file = '/home/pi/gitbucket/murmur/control/state.txt'
-    Buttons = namedtuple('Buttons', ['start', 'pause', 'stop'])
+    Buttons = namedtuple('Buttons', ['start', 'pause', 'stop', 'exit'])
 
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
@@ -40,25 +40,34 @@ class ButtonsLayout(GridLayout):
             'start': {
                 'type': Button,
                 'color': [0.2, 0.8, 0.2, 1],
-                'disabled': False
+                'disabled': False,
+                'on_press': self.pressed
             },
             'pause': {
                 'type': ToggleButton,
                 'color': [0.7, 0.7, 0.7, 1],
-                'disabled': True
+                'disabled': True,
+                'on_press': self.pressed
             },
             'stop': {
                 'type': Button,
                 'color': [0.88, 0.2, 0.2, 1],
-                'disabled': True
+                'disabled': True,
+                'on_press': self.pressed
+            },
+            'exit': {
+                'type': Button,
+                'color': [0.88, 0.2, 0.2, 1],
+                'disabled': False,
+                'on_press': self.exit
             }
         }
 
         return button_props
 
     def _make_button(self, text):
-        button = self.button_props[text]['type'](text=text.upper(), background_normal='', background_color=self.button_props[text]['color'])
-        button.bind(on_press=self.pressed)
+        button = self.button_props[text]['type'](text=text.upper(), font_size=30, bold=True, background_normal='', background_color=self.button_props[text]['color'])
+        button.bind(on_press=self.button_props[text]['on_press'])
         self.logger.info('{} button created'.format(text))
 
         return button
@@ -90,14 +99,16 @@ class ButtonsLayout(GridLayout):
         button.disabled = self.button_props[bttn_txt]['disabled']
 
     def _flip_disableds(self):
-        for key in self.button_props.keys():
+        for key in ['start', 'pause', 'stop']:
             key = 'pause' if key == 'resume' else key
             self.button_props[key]['disabled'] = not self.button_props[key]['disabled']
             self._set_disabled(getattr(self.buttons, key))
 
+    def _log_press(self, txt):
+        self.logger.info('{} button pressed'.format(txt))
+
     def initialize_disabled(self, button, dt):
         '''according to kivy, 'dt' stands for 'deltatime' and is needed for a Clock callback'''
-
         self._set_disabled(button)
 
     def pressed(self, instance):
@@ -107,9 +118,8 @@ class ButtonsLayout(GridLayout):
 
         this code works fine, but so far unable to implement it concurrently in main.py
         '''
-
         txt = instance.text
-        self.logger.info('{} button pressed'.format(txt))
+        self._log_press(txt)
         self._update_state(txt)
 
         if txt in ['PAUSE', 'RESUME']:
@@ -119,16 +129,21 @@ class ButtonsLayout(GridLayout):
             if txt == 'STOP':
                 self._reset_pause_text()
 
+    def exit(self, instance):
+        '''callback method for exit button to shut down the app'''
+        self._log_press(instance.text)
+        App.get_running_app().stop()
+
 
 class ButtonsApp(App):
 
     def build(self):
-        layout = ButtonsLayout(cols=3, spacing=30, padding=30, row_default_height=150)
+        layout = ButtonsLayout(cols=3, rows=2, rows_minimum={0: 330, 1: 150}, spacing=30, padding=30, row_default_height=150)
 
         # Make the background gray:
         with layout.canvas.before:
             Color(.2, .2, .2, 1)
-            self.rect = Rectangle(size=(800, 600), pos=layout.pos)
+            self.rect = Rectangle(size=(800, 480), pos=layout.pos)
 
             for button in layout.buttons:
                 layout.add_widget(button)
