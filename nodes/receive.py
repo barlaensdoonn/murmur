@@ -26,7 +26,7 @@ class TCPHandler(socketserver.BaseRequestHandler):
         self.server.logger.info('{} wrote: {}'.format(self.client_address[0], self.decoded))
 
         # acknowledge message was received by sending it back
-        self.server.logger.info('sending acknowledgement back to client')
+        self.server.logger.debug('sending acknowledgement back to client')
         self.request.sendall(data)
 
         # message should be in json format

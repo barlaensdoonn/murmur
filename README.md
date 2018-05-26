@@ -1,6 +1,11 @@
 # murmur
 
 ## dependencies
+#### *pyyaml*
+```
+sudo pip3 install pyyaml
+```
+
 #### *gpiozero*
 ```
 sudo apt-get update
@@ -28,3 +33,7 @@ power supply connections to relay terminals:
     +V 24V power supply -> +V actuator power input
     GND 24V power supply -> NC relay terminal -> GND actuator power input
 ```
+
+## signal flow
+![node arm](murmur_signal_flow_node_arm.png)
+![non-node arm](murmur_signal_flow_non_node_arm.png)

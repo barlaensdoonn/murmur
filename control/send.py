@@ -1,17 +1,18 @@
 #!/usr/bin/python3
 # murmur - send socket messages for controlling nodes
 # 1/12/18
-# updated: 1/23/18
+# updated: 2/19/18
 
 import json
 import socket
 import logging
 
 
-class Message(object):
+class NodeMessage(object):
     '''
-    message format:
+    instruction for node to carry out some action.
 
+    format:
     msg = {
         'arm': 'A',
         'actuator': 'low',
@@ -36,14 +37,15 @@ class Message(object):
 
 
 class Sender(object):
-    '''class to handle sending Message instances to listening hosts'''
+    '''class to handle sending socket client messages to listening servers'''
 
-    def __init__(self):
+    def __init__(self, calling_module):
+        self.calling_module = calling_module
         self.logger = self._initialize_logger()
 
     def _initialize_logger(self):
         logger = logging.getLogger('send')
-        logger.info('send logger instantiated')
+        logger.info('send logger instantiated from {}'.format(self.calling_module))
 
         return logger
 
