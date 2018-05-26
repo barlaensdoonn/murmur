@@ -10,6 +10,9 @@ sudo apt-get install python3-gpiozero
 #### *relay repo is a submodule*
 [link to the repo](https://github.com/barlaensdoonn/relay)
 
+## signal flow
+![node arm signal flow](murmur_signal_flow_node_arm.png)
+
 ## connections
 ![circuit layout](murmur_control_circuit_single_node.png)
 
