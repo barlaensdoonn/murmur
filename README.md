@@ -17,6 +17,7 @@ sudo apt-get install python3-gpiozero
 
 ## signal flow
 ![node arm signal flow](murmur_signal_flow_node_arm.png)
+![non node arm signal flow](murmur_signal_flow_non_node_arm.png)
 
 ## electrical connections
 ![circuit layout](murmur_control_circuit_single_node.png)
@@ -33,7 +34,3 @@ power supply connections to relay terminals:
     +V 24V power supply -> +V actuator power input
     GND 24V power supply -> NC relay terminal -> GND actuator power input
 ```
-
-## signal flow
-![node arm](murmur_signal_flow_node_arm.png)
-![non-node arm](murmur_signal_flow_non_node_arm.png)
