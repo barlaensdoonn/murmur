@@ -13,7 +13,7 @@ sudo apt-get install python3-gpiozero
 ## signal flow
 ![node arm signal flow](murmur_signal_flow_node_arm.png)
 
-## connections
+## electrical connections
 ![circuit layout](murmur_control_circuit_single_node.png)
 
 #### *denkovi 5V 4-channel relay board*
