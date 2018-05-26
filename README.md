@@ -1,4 +1,6 @@
 # murmur
+![murmur scale](murmur_scale.png)
+
 
 ## dependencies
 #### *pyyaml*
