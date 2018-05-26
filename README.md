@@ -7,12 +7,8 @@ sudo apt-get update
 sudo apt-get install python3-gpiozero
 ```
 
-#### *relay repo nested inside /nodes*
+#### *relay repo is a submodule*
 [link to the repo](https://github.com/barlaensdoonn/relay)
-```
-cd ~/gitbucket/murmur/nodes
-git clone https://github.com/barlaensdoonn/relay.git
-```
 
 ## connections
 ![circuit layout](murmur_control_circuit_single_node.png)
