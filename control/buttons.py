@@ -138,7 +138,7 @@ class ButtonsLayout(GridLayout):
 class ButtonsApp(App):
 
     def build(self):
-        layout = ButtonsLayout(cols=3, rows=2, rows_minimum={0: 330, 1: 150}, spacing=30, padding=30)
+        layout = ButtonsLayout(cols=3, rows=2, rows_minimum={0: 380, 1: 50}, spacing=20, padding=20)
 
         # Make the background gray:
         with layout.canvas.before:
