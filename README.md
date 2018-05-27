@@ -1,5 +1,5 @@
 # murmur
-![murmur scale](murmur_scale.png)
+![murmur scale](imgs/murmur_scale.png)
 
 
 ## dependencies
