@@ -10,7 +10,9 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics import Color, Rectangle
+import subprocess
 from functools import partial
 from collections import namedtuple
 
@@ -23,6 +25,7 @@ class ButtonsLayout(FloatLayout):
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
         self.logger = self._initialize_logger()
+        self.popup_buttons = self._setup_popup_buttons()
         self.popup = self._setup_popup()
         self.button_props = self._setup_buttons()
         self.buttons = self.Buttons(*self._make_buttons())
@@ -35,14 +38,38 @@ class ButtonsLayout(FloatLayout):
 
         return Logger
 
+    def _setup_popup_buttons(self):
+        popup_buttons = {
+            'hello': {
+                'button': Button(text='EXIT APP'),
+                'on_press': self._exit_app
+            },
+            'goodbye': {
+                'button': Button(text='REBOOT'),
+                'on_press': self._exit_app
+            },
+            'whatever': {
+                'button': Button(text='SHUTDOWN'),
+                'on_press': self._exit_app
+            }
+        }
+
+        return popup_buttons
+
     def _setup_popup(self):
         '''
         according to kivy the popup is a special type of widget, so we just
         instantiate it here and don't need to add it to the layout in ButtonsApp
         '''
-        content = Button(text='goodbyeworld')
-        popup = Popup(title='how would you like to exit', content=content, size_hint=(None, None), size=(400, 400))
-        content.bind(on_press=popup.dismiss)
+        box = BoxLayout(orientation='vertical', padding=5, spacing=10)
+        for button in self.popup_buttons.keys():
+            box.add_widget(self.popup_buttons[button]['button'])
+
+        content = box
+        popup = Popup(title='what do you mean by exit', content=content, size_hint=(None, None), size=(400, 400))
+
+        for button in self.popup_buttons.keys():
+            self.popup_buttons[button]['button'].bind(on_press=self.popup_buttons[button]['on_press'])
 
         return popup
 
@@ -138,6 +165,11 @@ class ButtonsLayout(FloatLayout):
     def _log_press(self, txt):
         self.logger.info('{} button pressed'.format(txt))
 
+    def _exit_app(self, instance):
+        '''callback method for exit button to shut down the app'''
+        self._log_press(instance.text)
+        App.get_running_app().stop()
+
     def initialize_disabled(self, button, dt):
         '''according to kivy, 'dt' stands for 'deltatime' and is needed for a Clock callback'''
         self._set_disabled(button)
@@ -159,11 +191,6 @@ class ButtonsLayout(FloatLayout):
             self._flip_disableds()
             if txt == 'STOP':
                 self._reset_pause_text()
-
-    def exit(self, instance):
-        '''callback method for exit button to shut down the app'''
-        self._log_press(instance.text)
-        App.get_running_app().stop()
 
 
 class ButtonsApp(App):
