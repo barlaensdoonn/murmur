@@ -39,18 +39,20 @@ class ButtonsLayout(FloatLayout):
         return Logger
 
     def _setup_popup_buttons(self):
+        font_size = 20
+
         popup_buttons = {
             'hello': {
-                'button': Button(text='EXIT APP'),
+                'button': Button(text='EXIT APP', font_size=font_size),
                 'on_press': self._exit_app
             },
             'goodbye': {
-                'button': Button(text='REBOOT'),
-                'on_press': self._exit_app
+                'button': Button(text='REBOOT', font_size=font_size),
+                'on_press': self._reboot
             },
             'whatever': {
-                'button': Button(text='SHUTDOWN'),
-                'on_press': self._exit_app
+                'button': Button(text='SHUTDOWN', font_size=font_size),
+                'on_press': self._shutdown
             }
         }
 
@@ -169,6 +171,14 @@ class ButtonsLayout(FloatLayout):
         '''callback method for exit button to shut down the app'''
         self._log_press(instance.text)
         App.get_running_app().stop()
+
+    def _reboot(self, instance):
+        self._log_press(instance.text)
+        subprocess.run(['sudo', 'reboot'])
+
+    def _shutdown(self, instance):
+        self._log_press(instance.text)
+        subprocess.run(['sudo', 'halt'])
 
     def initialize_disabled(self, button, dt):
         '''according to kivy, 'dt' stands for 'deltatime' and is needed for a Clock callback'''
