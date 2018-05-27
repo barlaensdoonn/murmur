@@ -8,13 +8,13 @@ from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.gridlayout import GridLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Color, Rectangle
 from functools import partial
 from collections import namedtuple
 
 
-class ButtonsLayout(GridLayout):
+class ButtonsLayout(FloatLayout):
 
     state_file = '/home/pi/gitbucket/murmur/control/state.txt'
     Buttons = namedtuple('Buttons', ['start', 'pause', 'stop', 'exit'])
@@ -34,30 +34,45 @@ class ButtonsLayout(GridLayout):
         return Logger
 
     def _setup_buttons(self):
-        '''setup button properties'''
+        '''
+        setup button properties. 'size_hint' is a tuple formatted (x, y) where
+        x, y is a percentage that specifies how much space the button should
+        use in each axis. 'pos' indicates where it is positioned in the layout,
+        with (0, 0) being the bottom left corner.
+        '''
+        size_hint_trio = (0.29, 0.75)
+        center_y_trio = 0.425
 
         button_props = {
             'start': {
                 'type': Button,
                 'color': [0.2, 0.8, 0.2, 1],
+                'size_hint': size_hint_trio,
+                'pos_hint': {'center_x': 0.175, 'center_y': center_y_trio},
                 'disabled': False,
                 'on_press': self.pressed
             },
             'pause': {
                 'type': ToggleButton,
                 'color': [0.7, 0.7, 0.7, 1],
+                'size_hint': size_hint_trio,
+                'pos_hint': {'center_x': 0.5, 'center_y': center_y_trio},
                 'disabled': True,
                 'on_press': self.pressed
             },
             'stop': {
                 'type': Button,
                 'color': [0.88, 0.2, 0.2, 1],
+                'size_hint': size_hint_trio,
+                'pos_hint': {'center_x': 0.825, 'center_y': center_y_trio},
                 'disabled': True,
                 'on_press': self.pressed
             },
             'exit': {
                 'type': Button,
                 'color': [0.88, 0.2, 0.2, 1],
+                'size_hint': (0.1, 0.1),
+                'pos_hint': {'center_x': 0.1, 'center_y': 0.9},
                 'disabled': False,
                 'on_press': self.exit
             }
@@ -66,7 +81,10 @@ class ButtonsLayout(GridLayout):
         return button_props
 
     def _make_button(self, text):
-        button = self.button_props[text]['type'](text=text.upper(), font_size=30, bold=True, background_normal='', background_color=self.button_props[text]['color'])
+        button = self.button_props[text]['type'](
+            text=text.upper(), font_size=30, bold=True, size_hint=self.button_props[text]['size_hint'],
+            pos_hint=self.button_props[text]['pos_hint'], background_normal='', background_color=self.button_props[text]['color']
+        )
         button.bind(on_press=self.button_props[text]['on_press'])
         self.logger.info('{} button created'.format(text))
 
@@ -138,7 +156,7 @@ class ButtonsLayout(GridLayout):
 class ButtonsApp(App):
 
     def build(self):
-        layout = ButtonsLayout(cols=3, rows=2, rows_minimum={0: 380, 1: 50}, spacing=20, padding=20)
+        layout = ButtonsLayout(size=(800, 480))
 
         # Make the background gray:
         with layout.canvas.before:
