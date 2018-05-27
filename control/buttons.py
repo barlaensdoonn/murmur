@@ -68,7 +68,7 @@ class ButtonsLayout(FloatLayout):
             box.add_widget(self.popup_buttons[button]['button'])
 
         content = box
-        popup = Popup(title='what do you mean by exit', content=content, size_hint=(None, None), size=(400, 400))
+        popup = Popup(title='touch outside this popup to cancel', content=content, size_hint=(None, None), size=(400, 400))
 
         for button in self.popup_buttons.keys():
             self.popup_buttons[button]['button'].bind(on_press=self.popup_buttons[button]['on_press'])
