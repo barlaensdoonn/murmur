@@ -7,6 +7,7 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.button import Button
+from kivy.uix.popup import Popup
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.floatlayout import FloatLayout
 from kivy.graphics import Color, Rectangle
@@ -22,6 +23,7 @@ class ButtonsLayout(FloatLayout):
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
         self.logger = self._initialize_logger()
+        self.popup = self._setup_popup()
         self.button_props = self._setup_buttons()
         self.buttons = self.Buttons(*self._make_buttons())
         self.state = 'pause'
@@ -33,12 +35,23 @@ class ButtonsLayout(FloatLayout):
 
         return Logger
 
+    def _setup_popup(self):
+        '''
+        according to kivy the popup is a special type of widget, so we just
+        instantiate it here and don't need to add it to the layout in ButtonsApp
+        '''
+        content = Button(text='goodbyeworld')
+        popup = Popup(title='how would you like to exit', content=content, size_hint=(None, None), size=(400, 400))
+        content.bind(on_press=popup.dismiss)
+
+        return popup
+
     def _setup_buttons(self):
         '''
-        setup button properties. 'size_hint' is a tuple formatted (x, y) where
-        x, y is a percentage that specifies how much space the button should
-        use in each axis. 'pos' indicates where it is positioned in the layout,
-        with (0, 0) being the bottom left corner.
+        setup button properties. 'size_hint' is a tuple formatted (x, y)
+        where x and y are each a percentage that specifies how much space
+        the button should use in each axis. 'pos' indicates where it is
+        positioned in the layout, with (0, 0) being the bottom left corner.
         '''
         size_hint_trio = (0.29, 0.75)
         center_y_trio = 0.425
@@ -74,7 +87,7 @@ class ButtonsLayout(FloatLayout):
                 'size_hint': (0.1, 0.1),
                 'pos_hint': {'center_x': 0.1, 'center_y': 0.9},
                 'disabled': False,
-                'on_press': self.exit
+                'on_press': self.popup.open
             }
         }
 
