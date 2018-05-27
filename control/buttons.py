@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 5/26/18
+# updated: 5/27/18
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -13,8 +13,21 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics import Color, Rectangle
 import subprocess
-from functools import partial
+from functools import partial, wraps
 from collections import namedtuple
+
+
+# NOTE: this decorator is not currently working, and i'm not sure if its my misunderstanding
+# of them, or if it's kivy specific. i'm leaving it here for my own sake, in case
+# i want to try to understand decorators better at some point in the future
+def log_press(func):
+    '''decorator to log which button is pressed from its callback method'''
+    @wraps(func)
+    def wrapper(self, instance):
+        self.logger.info('{} button pressed'.format(instance.text))
+        func(self)
+
+    return wrapper
 
 
 class ButtonsLayout(FloatLayout):
@@ -164,20 +177,20 @@ class ButtonsLayout(FloatLayout):
             self.button_props[key]['disabled'] = not self.button_props[key]['disabled']
             self._set_disabled(getattr(self.buttons, key))
 
-    def _log_press(self, txt):
-        self.logger.info('{} button pressed'.format(txt))
+    def _log_press(self, instance):
+        self.logger.info('{} button pressed'.format(instance.text))
 
     def _exit_app(self, instance):
         '''callback method for exit button to shut down the app'''
-        self._log_press(instance.text)
+        self._log_press(instance)
         App.get_running_app().stop()
 
     def _reboot(self, instance):
-        self._log_press(instance.text)
+        self._log_press(instance)
         subprocess.run(['sudo', 'reboot'])
 
     def _shutdown(self, instance):
-        self._log_press(instance.text)
+        self._log_press(instance)
         subprocess.run(['sudo', 'halt'])
 
     def initialize_disabled(self, button, dt):
@@ -191,8 +204,8 @@ class ButtonsLayout(FloatLayout):
 
         this code works fine, but so far unable to implement it concurrently in main.py
         '''
+        self._log_press(instance)
         txt = instance.text
-        self._log_press(txt)
         self._update_state(txt)
 
         if txt in ['PAUSE', 'RESUME']:
