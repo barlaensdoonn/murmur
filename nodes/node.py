@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/16/18
+# updated: 1/23/18
 
 import logging
 from arm import Arm
@@ -33,6 +33,7 @@ class Node(object):
 
         self.hostname = hostname
         self.logger = self._initialize_logger()
+        self._modify_pin_groups()
         self.arms = self._initialize_arms(**kwargs)
 
     def _initialize_logger(self):
@@ -40,6 +41,16 @@ class Node(object):
         logger.info('node logger instantiated')
 
         return logger
+
+    def _modify_pin_groups(self):
+        '''
+        change murmur04's last pin_group, replacing GPIO pin 16 with 25.
+        this is due to a wiring fault at Mystic and should be corrected in later iterations
+        '''
+
+        if self.hostname == 'murmur04':
+            self.logger.info('modifying last pin group to [12, 25, 20, 21]')
+            self.pin_groups[-1] = [12, 25, 20, 21]
 
     def _initialize_arms(self, **kwargs):
         '''
@@ -63,6 +74,11 @@ class Node(object):
             self.arms[arm].test_connections()
 
     def parse_action(self, action):
+        '''
+        this is called in the receive module by the TCP server when a valid message is received.
+        specifically it's called by the TCPHandler class in its handle() method after the msg is parsed
+        '''
+
         try:
             arm = self.arms[action['arm']]
             actuator = action['actuator']

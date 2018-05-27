@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 1/18/18
+# updated: 1/23/18
 
 import logging
-from datetime import timedelta
 from relay import relay  # nested relay repo from here: https://github.com/barlaensdoonn/relay
 
 
@@ -19,16 +18,7 @@ class Arm(object):
         'mid-retract': Relay([pins[2]),
         'tip-top': Relay([pins[3])
     }
-
-    total_time = total amount of time in seconds that an arm takes to go through its movement sequence
-    ratio = ratio expressing each actuator's piece of total_time
-
     '''
-
-    # total_time = timedelta(seconds=180)
-    # ratio = [1, 3, 2]
-    # ratio_total = sum(ratio)
-    # seconds_split = [i/ratio_total * total_time.seconds for i in ratio]
 
     actuator_order = ['low', 'mid-ext', 'mid-retract', 'top']
 
@@ -47,9 +37,6 @@ class Arm(object):
         logger.info('arm {} logger instantiated'.format(self.arm))
 
         return logger
-
-    def _initialize_ratio(self):
-        pass
 
     def _initialize_actuators(self, pins, **kwargs):
         self.logger.info('initializing actuators on GPIO pins {}, {}, {}, {}'.format(*pins))
