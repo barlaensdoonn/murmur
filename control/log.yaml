@@ -29,11 +29,11 @@ loggers:
         level: INFO
         handlers: [file]
         propogate: False
-    main:
+    watchdog:
         level: INFO
         handlers: [file]
         propogate: False
-    shutdown:
+    main:
         level: INFO
         handlers: [file]
         propogate: False

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/11/18
-# updated: 1/16/18
+# updated: 1/23/18
 
 import os
 import yaml
@@ -48,6 +48,7 @@ def initialize_node(hostname):
     logger.info('...initializing node...')
 
     return Node(hostname)
+
 
 def initialize_receive(node):
     logger.info('...initializing receive...')
