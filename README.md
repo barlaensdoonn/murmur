@@ -18,11 +18,11 @@ sudo apt-get install python3-gpiozero
 [link to the repo](https://github.com/barlaensdoonn/relay)
 
 ## signal flow
-![node arm signal flow](murmur_signal_flow_node_arm.png)
-![non node arm signal flow](murmur_signal_flow_non_node_arm.png)
+![node arm signal flow](imgs/murmur_signal_flow_node_arm.png)
+![non node arm signal flow](imgs/murmur_signal_flow_non_node_arm.png)
 
 ## electrical connections
-![circuit layout](murmur_control_circuit_single_node.png)
+![circuit layout](imgs/murmur_control_circuit_single_node.png)
 
 #### *denkovi 5V 4-channel relay board*
 [link to the board](http://denkovi.com/relay-module-5v-4-channels-for-raspberry-pi-arduino-pic-avr)
