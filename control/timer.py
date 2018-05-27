@@ -1,34 +1,31 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 1/18/18
+# updated: 2/11/18
 
 import time
 import logging
-import logging.config
 from datetime import datetime, timedelta
 
 
 '''
-1. start with M low; 2 second delay; repeat sequentially all the way to A
-2. 20 second delay after low movement
-3. start with A and fire both mid-ext and top; 5 second delay; repeat to L
-4. reverse starting with M top and mid-retract; then low
+1. activate M low; 2 second delay; repeat sequentially all the way to A
+2. 10 second delay after low movement
+3. start with A and simultaneously activate mid-ext and deactivate top; 5 second delay; repeat to M
+4. 2 minute rest in fully open position
+5. activate M top, deactivate mid-ext, 0.1 second delay, activate mid-retract; repeat to A
+6. 1 minute pause
+7. deactivate low A; 2 second pause; repeat to M
+8. 3 minute rest in fully closed position
+9. repeat #1 - #8
 '''
+
 
 class Timer(object):
     arms_A_to_M = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
     arms_M_to_A = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
     pauses = {
-        'initialize_mid_and_top': {
-            'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=10)
-        },
-        'release_mid_retract': {
-            'sequence': timedelta(seconds=1),
-            'done': timedelta(seconds=10)
-        },
         'low': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=10)
@@ -44,20 +41,14 @@ class Timer(object):
         'lowlow': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=180)
+        },
+        'release_mid-ext': {
+            'sequence': timedelta(seconds=1),
+            'done': timedelta(seconds=60)
         }
     }
 
     actions = {
-        'initialize_mid_and_top': {
-            'order': arms_M_to_A,
-            'actuators': ['top', 'mid-ext', 'mid-retract'],
-            'activate': [True, False, True]
-        },
-        'release_mid_retract': {
-            'order': arms_M_to_A,
-            'actuators': ['mid-retract'],
-            'activate': [False]
-        },
         'low': {
             'order': arms_M_to_A,
             'actuators': ['low'],
@@ -65,8 +56,8 @@ class Timer(object):
         },
         'mid-ext_and_top': {
             'order': arms_A_to_M,
-            'actuators': ['mid-ext', 'top'],
-            'activate': [True, False]
+            'actuators': ['mid-retract', 'mid-ext', 'top'],
+            'activate': [False, True, False]
         },
         'mid-retract_and_top': {
             'order': arms_M_to_A,
@@ -77,17 +68,32 @@ class Timer(object):
             'order': arms_M_to_A,
             'actuators': ['low'],
             'activate': [False]
+        },
+        'release_mid-ext': {
+            'order': arms_M_to_A,
+            'actuators': ['mid-ext'],
+            'activate': [False]
         }
     }
 
     def __init__(self):
         self.logger = self._initialize_logger()
+        self.sequences = self._set_sequences()
 
     def _initialize_logger(self):
         logger = logging.getLogger('timer')
         logger.info('timer logger instantiated')
 
         return logger
+
+    def _set_sequences(self):
+        sequences = {
+            'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
+            'main_loop': ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow'],
+            'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
+        }
+
+        return sequences
 
     def _get_pause(self, pause):
         return datetime.now() + pause
@@ -106,6 +112,7 @@ class Timer(object):
 
     def _fire(self, action):
         self.logger.info('firing {}'.format(action))
+
         for arm in self.actions[action]['order']:
             pause = self._get_pause(self.pauses[action]['sequence'])
 
@@ -120,57 +127,14 @@ class Timer(object):
                         action_tuple = (arm, actuators[i], activate[i])
                         self.logger.debug('yielding action: {}'.format(action_tuple))
                         yield (action_tuple)
-                        if actuators[i] == 'mid-ext':
+
+                        if 'mid' in actuators[i]:
                             time.sleep(0.1)
                     break
 
-    def _wrapper(self):
-        for action in self._fire('low'):
-            yield action
-        for pause in self._pause('low'):
-            yield pause
+    def run(self, sequence):
+        seq = self.sequences[sequence]
 
-        for action in self._fire('mid-ext_and_top'):
-            yield action
-        for pause in self._pause('mid-ext_and_top'):
-            yield pause
-
-        for action in self._fire('mid-retract_and_top'):
-            yield action
-        for pause in self._pause('mid-retract_and_top'):
-            yield pause
-
-        for action in self._fire('lowlow'):
-            yield action
-        for pause in self._pause('lowlow'):
-            yield pause
-
-    def initialize(self):
-        for action in self._fire('low'):
-            yield action
-        for pause in self._pause('low'):
-            yield pause
-
-        for action in self._fire('initialize_mid_and_top'):
-            yield action
-        for pause in self._pause('initialize_mid_and_top'):
-            yield pause
-
-        for action in self._fire('release_mid_retract'):
-            yield action
-        for pause in self._pause('release_mid_retract'):
-            yield pause
-
-        for action in self._fire('lowlow'):
-            yield action
-        for pause in self._pause('lowlow'):
-            yield pause
-
-    def run(self):
-        while True:
-            try:
-                for event in self._wrapper():
-                    yield event
-            except KeyboardInterrupt:
-                self.logger.info('...user exit received...')
-                break
+        for thing in seq:
+            yield from self._fire(thing)
+            yield from self._pause(thing)
