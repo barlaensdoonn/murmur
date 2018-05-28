@@ -19,7 +19,7 @@ from collections import namedtuple
 
 # NOTE: this decorator is not currently working, and i'm not sure if its my misunderstanding
 # of them, or if it's kivy specific. i'm leaving it here for my own sake, in case
-# i want to try to understand decorators better at some point in the future
+# i want to revisit it at some point in the future
 def log_press(func):
     '''decorator to log which button is pressed from its callback method'''
     @wraps(func)
@@ -34,6 +34,7 @@ class ButtonsLayout(FloatLayout):
 
     state_file = '/home/pi/gitbucket/murmur/control/state.txt'
     Buttons = namedtuple('Buttons', ['start', 'pause', 'stop', 'exit'])
+    hosts = ['pi@murmur01.local', 'pi@murmur02.local', 'pi@murmur03.local', 'pi@murmur04.local']
 
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
@@ -55,18 +56,26 @@ class ButtonsLayout(FloatLayout):
         font_size = 20
 
         popup_buttons = {
-            'hello': {
+            'exit': {
                 'button': Button(text='EXIT APP', font_size=font_size),
                 'on_press': self._exit_app
             },
-            'goodbye': {
+            'reboot': {
                 'button': Button(text='REBOOT', font_size=font_size),
                 'on_press': self._reboot
             },
-            'whatever': {
+            'shutdown': {
                 'button': Button(text='SHUTDOWN', font_size=font_size),
                 'on_press': self._shutdown
-            }
+            },
+            'reboot_all': {
+                'button': Button(text='REBOOT ALL', font_size=font_size),
+                'on_press': self._boot_all
+            },
+            'shutdown_all': {
+                'button': Button(text='SHUTDOWN ALL', font_size=font_size),
+                'on_press': self._boot_all
+            },
         }
 
         return popup_buttons
@@ -81,7 +90,7 @@ class ButtonsLayout(FloatLayout):
             box.add_widget(self.popup_buttons[button]['button'])
 
         content = box
-        popup = Popup(title='touch outside this popup to cancel', content=content, size_hint=(None, None), size=(400, 400))
+        popup = Popup(title='touch outside this popup to cancel', content=content, size_hint=(None, None), size=(400, 460))
 
         for button in self.popup_buttons.keys():
             self.popup_buttons[button]['button'].bind(on_press=self.popup_buttons[button]['on_press'])
@@ -98,7 +107,7 @@ class ButtonsLayout(FloatLayout):
         size_hint_trio = (0.29, 0.75)
         center_y_trio = 0.425
 
-        button_props = {
+        buttons = {
             'start': {
                 'type': Button,
                 'color': [0.2, 0.8, 0.2, 1],
@@ -133,7 +142,7 @@ class ButtonsLayout(FloatLayout):
             }
         }
 
-        return button_props
+        return buttons
 
     def _make_button(self, text):
         button = self.button_props[text]['type'](
@@ -188,6 +197,18 @@ class ButtonsLayout(FloatLayout):
     def _reboot(self, instance):
         self._log_press(instance)
         subprocess.run(['sudo', 'reboot'])
+
+    def _boot_all(self, instance):
+        '''handle both reboot all and shutdown all popup button presses'''
+        self._log_press(instance)
+        action = 'reboot' if 'reboot' in instance.text.lower() else 'halt'
+
+        # run action on the nodes via ssh
+        for host in self.hosts:
+            subprocess.run(['ssh', host, 'sudo', action])
+
+        # run the action locally
+        subprocess.run(['sudo', action])
 
     def _shutdown(self, instance):
         self._log_press(instance)
