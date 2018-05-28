@@ -1,10 +1,15 @@
 #!/usr/bin/python3
 # murmur - watchdog to monitor state changes registered by touchscreen buttons
 # 3/1/18
-# updated: 3/4/18
+# updated: 5/27/18
 
+import os
 import time
 import logging
+
+
+def get_basepath():
+    return os.path.dirname(os.path.realpath(__file__))
 
 
 class Watchdog:
@@ -13,7 +18,7 @@ class Watchdog:
     state_map maps 'start' and 'stop' states to sequence lists for run and run_sequence in main.py
     '''
 
-    state_file = 'state.txt'
+    state_file = os.path.join(get_basepath(), 'state.txt')
 
     state_map = {
         'start': ['initialize', 'main_loop'],

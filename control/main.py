@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 3/4/18
+# updated: 5/27/18
 
 import os
 import sys
@@ -24,7 +24,6 @@ host_arm_map = {
 
 def _get_logfile_name(basepath, hostname):
     '''format log file as "hostname.log"'''
-
     return os.path.join(basepath, '{}.log'.format(hostname))
 
 
@@ -130,13 +129,13 @@ def run(watchdog):
 
             while running:
                 running = run_sequence(watchdog, running)
-
         except KeyboardInterrupt:
             logger.info('''...user exit received...''')
             quit()
         except Exception:
             logger.exception('unexpected exception!!')
             quit()
+
 
 if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
