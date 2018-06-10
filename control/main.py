@@ -138,6 +138,7 @@ def run(watchdog):
             logger.exception('unexpected exception!!')
             quit()
 
+
 if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
     watchdog = Watchdog()
