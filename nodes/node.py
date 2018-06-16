@@ -51,6 +51,18 @@ class Node(object):
             self.logger.info('modifying last pin group to [12, 25, 20, 21]')
             self.pin_groups[-1] = [12, 25, 20, 21]
 
+    def _intercept_d_low(self, arm, actuator):
+        '''
+        intercept a message to fire D low, and return F top
+        this is a hack to work around a ghost in the machine. we repurpose the F top
+        relay - which is not being used - and use it to fire D low.
+        '''
+        if arm == 'D' and actuator == 'low':
+            self.logger.info('replacing D low with F top')
+            return ('F', 'low')
+        else:
+            return (arm, actuator)
+
     def _initialize_arms(self, **kwargs):
         '''
         the for loop and return statement can be replaced with this more unreadable one-liner:
@@ -81,6 +93,11 @@ class Node(object):
         try:
             arm = self.arms[action['arm']]
             actuator = action['actuator']
+
+            # NOTE: this should be replaced in future iterations
+            # this is a hack to work around a failed relay, we repurpose F top to use for D low
+            arm, actuator = self._intercept_d_low(arm, actuator)
+
             activate = action['activate']
 
             if activate:
