@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 5/27/18
+# updated: 6/16/18
 
 import os
 import sys
@@ -68,7 +68,6 @@ def quit():
 def run_sequence(watchdog, sequence_list):
     '''
     we use the Watchdog class variable state_maps to break out of the loop if necessary:
-
     if the state is updated and it's one we're interested in (either 'start' or 'stop'),
     and the current sequence is not in the new state's sequence list in watchdog.state_maps,
     stop current sequence by returning the sequence list to be run next

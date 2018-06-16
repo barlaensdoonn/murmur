@@ -1,27 +1,25 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 2/11/18
+# updated: 6/16/18
 
 import time
 import logging
 from datetime import datetime, timedelta
 
 
-'''
-1. activate M low; 2 second delay; repeat sequentially all the way to A
-2. 10 second delay after low movement
-3. start with A and simultaneously activate mid-ext and deactivate top; 5 second delay; repeat to M
-4. 2 minute rest in fully open position
-5. activate M top, deactivate mid-ext, 0.1 second delay, activate mid-retract; repeat to A
-6. 1 minute pause
-7. deactivate low A; 2 second pause; repeat to M
-8. 3 minute rest in fully closed position
-9. repeat #1 - #8
-'''
-
-
-class Timer(object):
+class Mystic:
+    '''
+    1. activate M low; 2 second delay; repeat sequentially all the way to A
+    2. 10 second delay after low movement
+    3. start with A and simultaneously activate mid-ext and deactivate top; 5 second delay; repeat to M
+    4. 2 minute rest in fully open position
+    5. activate M top, deactivate mid-ext, 0.1 second delay, activate mid-retract; repeat to A
+    6. 1 minute pause
+    7. deactivate low A; 2 second pause; repeat to M
+    8. 3 minute rest in fully closed position
+    9. repeat #1 - #8
+    '''
     arms_A_to_M = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
     arms_M_to_A = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
@@ -76,24 +74,30 @@ class Timer(object):
         }
     }
 
-    def __init__(self):
+    sequences = {
+        'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
+        'main_loop': ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow'],
+        'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
+    }
+
+
+class Timer:
+    '''
+    machinery to somewhat asynchronously run the sequences specified by
+    the timer class passed into __init__()
+    '''
+
+    def __init__(self, timer):
         self.logger = self._initialize_logger()
-        self.sequences = self._set_sequences()
+        self.pauses = timer.pauses
+        self.actions = timer.actions
+        self.sequences = timer.sequences
 
     def _initialize_logger(self):
         logger = logging.getLogger('timer')
         logger.info('timer logger instantiated')
 
         return logger
-
-    def _set_sequences(self):
-        sequences = {
-            'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
-            'main_loop': ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow'],
-            'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
-        }
-
-        return sequences
 
     def _get_pause(self, pause):
         return datetime.now() + pause
