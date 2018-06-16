@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - class to represent a single node controlling 3 arms
 # 12/9/17
-# updated: 1/23/18
+# updated: 6/16/18
 
 import logging
 from arm import Arm
@@ -33,7 +33,6 @@ class Node(object):
 
         self.hostname = hostname
         self.logger = self._initialize_logger()
-        self._modify_pin_groups()
         self.arms = self._initialize_arms(**kwargs)
 
     def _initialize_logger(self):
