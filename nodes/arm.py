@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # murmur - class to represent single arm with 3 actuators
 # 12/9/17
-# updated: 1/23/18
+# updated: 6/10/18
 
 import logging
-from relay import relay  # nested relay repo from here: https://github.com/barlaensdoonn/relay
+from relay import relay  # relay repo is currently a submodule: https://github.com/barlaensdoonn/relay
 
 
 class Arm(object):
