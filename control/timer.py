@@ -102,11 +102,11 @@ class Anchorage:
             'done': timedelta(seconds=45)
         },
         'top_collapse': {
-            'sequence': timedelta(seconds=4),
+            'sequence': timedelta(seconds=8),
             'done': timedelta(seconds=300)
         },
         'top_restore': {
-            'sequence': timedelta(seconds=4),
+            'sequence': timedelta(seconds=8),
             'done': timedelta(seconds=45)
         },
         'bottom_restore': {
