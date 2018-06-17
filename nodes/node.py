@@ -94,8 +94,8 @@ class Node(object):
             arm = self.arms[action['arm']]
             actuator = action['actuator']
 
-            # NOTE: this should be replaced in future iterations
-            # this is a hack to work around a failed relay, we repurpose F top to use for D low
+            # NOTE: this should be replaced in future iterations. this is a hack
+            # to work around a failed relay, we repurpose F top to use for D low
             arm, actuator = self._intercept_d_low(arm, actuator)
 
             activate = action['activate']

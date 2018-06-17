@@ -81,6 +81,85 @@ class Mystic:
     }
 
 
+class Anchorage:
+    '''
+    '''
+
+    pauses = {
+        'open': {
+            'sequence': timedelta(seconds=2),
+            'done': timedelta(seconds=10)
+        },
+        'bottom_collapse': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=45)
+        },
+        'top_collapse': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=300)
+        },
+        'top_restore': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=45)
+        },
+        'bottom_restore': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=75)
+        },
+        'close': {
+            'sequence': timedelta(seconds=2),
+            'done': timedelta(seconds=600)
+        }
+    }
+
+    all_arms_cw = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
+    all_arms_ccw = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
+    bottom_arms_cw = ['A', 'C', 'E', 'G', 'J', 'L']
+    bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
+    top_arms_cw = ['B', 'D', 'F', 'H', 'K', 'M']
+    top_arms_ccw = ['M', 'K', 'H', 'F', 'D', 'B']
+
+    actions = {
+        'open': {
+            'order': all_arms_cw,
+            'actuators': ['low'],
+            'activate': [True]
+        },
+        'bottom_collapse': {
+            'order': bottom_arms_cw,
+            'actuators': ['low', 'mid-ext', 'mid-retract', 'top'],
+            'activate': [False, False, True, True]
+        },
+        'top_collapse': {
+            'order': top_arms_cw,
+            'actuators': ['mid-ext', 'mid-retract'],
+            'activate': [False, True]
+        },
+        'top_restore': {
+            'order': top_arms_ccw,
+            'actuators': ['mid-retract', 'mid-ext'],
+            'activate': [False, True]
+        },
+        'bottom_restore': {
+            'order': bottom_arms_ccw,
+            'actuators': ['top', 'mid-retract', 'mid-ext', 'low'],
+            'activate': [False, False, True, True]
+        },
+        'close': {
+            'order': all_arms_ccw,
+            'actuators': ['low'],
+            'activate': [False]
+        }
+    }
+
+    # TODO: figure out initialize and shutdown sequences
+    sequences = {
+        # 'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
+        'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
+        # 'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
+    }
+
+
 class Timer:
     '''
     machinery to somewhat asynchronously run the sequences specified by
@@ -115,6 +194,10 @@ class Timer:
                 break
 
     def _fire(self, action):
+        '''
+        we pause slightly to ensure both mid-valves are never fired at the same time.
+        the pause is located at the NOTE below.
+        '''
         self.logger.info('firing {}'.format(action))
 
         for arm in self.actions[action]['order']:
@@ -132,6 +215,7 @@ class Timer:
                         self.logger.debug('yielding action: {}'.format(action_tuple))
                         yield (action_tuple)
 
+                        # NOTE: slight pause to ensure both mid valves are never open simultaneously
                         if 'mid' in actuators[i]:
                             time.sleep(0.1)
                     break
