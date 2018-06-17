@@ -28,7 +28,7 @@ loggers:
         handlers: [file]
         propogate: False
     node:
-        level: INFO
+        level: DEBUG
         handlers: [file]
         propogate: False
     main:
