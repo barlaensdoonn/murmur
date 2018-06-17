@@ -10,9 +10,10 @@ import yaml
 import socket
 import logging
 import logging.config
-from timer import Timer
+from timer import Anchorage, Timer
 from send import NodeMessage, Sender
 from watchdog import Watchdog
+
 
 host_arm_map = {
     'murmur01': ['A', 'B', 'C'],
@@ -140,6 +141,7 @@ if __name__ == '__main__':
     logger = configure_logger(get_basepath(), get_hostname())
     watchdog = Watchdog()
     sender = Sender(__name__)
-    timer = Timer()
+    anchor = Anchorage()
+    timer = Timer(timer=anchor)
 
     run(watchdog)
