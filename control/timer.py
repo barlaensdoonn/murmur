@@ -85,6 +85,13 @@ class Anchorage:
     '''
     '''
 
+    all_arms_cw = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
+    all_arms_ccw = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
+    bottom_arms_cw = ['A', 'C', 'E', 'G', 'J', 'L']
+    bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
+    top_arms_cw = ['B', 'D', 'F', 'H', 'K', 'M']
+    top_arms_ccw = ['M', 'K', 'H', 'F', 'D', 'B']
+
     pauses = {
         'open': {
             'sequence': timedelta(seconds=2),
@@ -111,13 +118,6 @@ class Anchorage:
             'done': timedelta(seconds=600)
         }
     }
-
-    all_arms_cw = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
-    all_arms_ccw = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
-    bottom_arms_cw = ['A', 'C', 'E', 'G', 'J', 'L']
-    bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
-    top_arms_cw = ['B', 'D', 'F', 'H', 'K', 'M']
-    top_arms_ccw = ['M', 'K', 'H', 'F', 'D', 'B']
 
     actions = {
         'open': {
