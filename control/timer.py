@@ -122,8 +122,8 @@ class Anchorage:
     actions = {
         'open': {
             'order': all_arms_cw,
-            'actuators': ['low'],
-            'activate': [True]
+            'actuators': ['low', 'mid-ext'],  # mid-ext is here to ensure it's fired when the pingo first starts up
+            'activate': [True, True]
         },
         'bottom_collapse': {
             'order': bottom_arms_cw,
@@ -154,7 +154,7 @@ class Anchorage:
 
     # TODO: figure out initialize and shutdown sequences
     sequences = {
-        # 'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
+        'initialize': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
         # 'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
     }
@@ -162,7 +162,7 @@ class Anchorage:
 
 class Timer:
     '''
-    machinery to somewhat asynchronously run the sequences specified by
+    machinery to (somewhat) asynchronously run the sequences specified by
     the timer class passed into __init__()
     '''
 
