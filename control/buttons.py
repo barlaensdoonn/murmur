@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 5/27/18
+# updated: 6/16/18
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -17,9 +17,7 @@ from functools import partial, wraps
 from collections import namedtuple
 
 
-# NOTE: this decorator is not currently working, and i'm not sure if its my misunderstanding
-# of them, or if it's kivy specific. i'm leaving it here for my own sake, in case
-# i want to revisit it at some point in the future
+# NOTE: this decorator is not currently working, just here for reference
 def log_press(func):
     '''decorator to log which button is pressed from its callback method'''
     @wraps(func)
@@ -251,7 +249,7 @@ class ButtonsApp(App):
                 layout.add_widget(button)
 
                 # since creating a button with disabled = True in ButtonsLayout didn't work,
-                # we schedule disabled to be set in the future after build returns
+                # we schedule disabled to be set in the future after build returns.
                 # partial is used since the function itself must be passed as an argument
                 Clock.schedule_once(partial(layout.initialize_disabled, button), 0.1)
 

@@ -90,19 +90,19 @@ class Anchorage:
     bottom_arms_cw = ['A', 'C', 'E', 'G', 'J', 'L']
     bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
     top_arms_cw = ['B', 'D', 'F', 'H', 'K', 'M']
-    top_arms_ccw = ['M', 'K', 'H', 'F', 'D', 'B']
+    top_arms_ccw = ['M', 'K', 'F', 'H', 'D', 'B']  # NOTE: this is a hack to get F out of the way of H on the mid movement
 
     pauses = {
         'open': {
             'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=10)
+            'done': timedelta(seconds=30)
         },
         'bottom_collapse': {
             'sequence': timedelta(seconds=4),
             'done': timedelta(seconds=45)
         },
         'top_collapse': {
-            'sequence': timedelta(seconds=8),
+            'sequence': timedelta(seconds=12),
             'done': timedelta(seconds=300)
         },
         'top_restore': {
