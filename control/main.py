@@ -35,8 +35,10 @@ def _initialize_logger():
     return logger
 
 
-def get_basepath():
-    return os.path.dirname(os.path.realpath(__file__))
+def get_basepath(current_path=None):
+    '''we need to pass in a path if not running this as a file'''
+    path = __file__ if not current_path else current_path
+    return os.path.dirname(os.path.realpath(path))
 
 
 def get_hostname():
@@ -138,7 +140,7 @@ def run(watchdog):
 
 
 if __name__ == '__main__':
-    logger = configure_logger(get_basepath(), get_hostname())
+    logger = configure_logger(get_basepath(current_path=None), get_hostname())
     watchdog = Watchdog()
     sender = Sender(__name__)
     anchor = Anchorage()
