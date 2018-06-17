@@ -57,11 +57,9 @@ class Node(object):
         this is a hack to work around a ghost in the machine. we repurpose the F top
         relay - which is not being used - and use it to fire D low.
         '''
-        print('inside _intercept_d_low() method')
-        print('arm: {}, actuator: {}'.format(arm, actuator))
         if arm == 'D' and actuator == 'low':
             self.logger.info('replacing D low with F top')
-            return ('F', 'low')
+            return ('F', 'top')
         else:
             return (arm, actuator)
 
@@ -98,8 +96,6 @@ class Node(object):
             string_arm, string_actuator = self._intercept_d_low(action['arm'], action['actuator'])
             arm = self.arms[string_arm]
             actuator = string_actuator
-            print('after intercept')
-            print('arm: {}, actuator: {}'.format(arm, actuator))
 
             activate = action['activate']
 
