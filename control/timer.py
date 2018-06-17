@@ -166,7 +166,7 @@ class Timer:
     the timer class passed into __init__()
     '''
 
-    def __init__(self, timer):
+    def __init__(self, timer=None):
         self.logger = self._initialize_logger()
         self.pauses = timer.pauses
         self.actions = timer.actions

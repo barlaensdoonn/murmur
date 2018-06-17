@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - touch buttons
 # 1/27/18
-# updated: 6/16/18
+# updated: 6/17/18
 
 from kivy.app import App
 from kivy.clock import Clock
@@ -220,8 +220,9 @@ class ButtonsLayout(FloatLayout):
         '''
         initially tried sending socket messages using our send.py module, i.e.:
         self.sender.send_msg('127.0.0.1', instance.text)
+        this code works fine, but so far unable to implement a listener concurrently in main.py
 
-        this code works fine, but so far unable to implement it concurrently in main.py
+        instead we write the state to a file that the watchdog module is monitoring.
         '''
         self._log_press(instance)
         txt = instance.text

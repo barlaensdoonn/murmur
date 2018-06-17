@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - watchdog to monitor state changes registered by touchscreen buttons
 # 3/1/18
-# updated: 5/27/18
+# updated: 6/18/18
 
 import os
 import time
@@ -15,7 +15,7 @@ def get_basepath():
 class Watchdog:
     '''
     state_file is the file updated by buttons.py when touchscreen buttons are pressed.
-    state_map maps 'start' and 'stop' states to sequence lists for run and run_sequence in main.py
+    state_map translates states to sequence lists for run and run_sequence in main.py
     '''
 
     state_file = os.path.join(get_basepath(), 'state.txt')

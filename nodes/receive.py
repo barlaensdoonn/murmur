@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - socket server for receiving network messages
 # 1/12/18
-# updated: 1/23/18
+# updated: 6/17/18
 
 import json
 import socket
@@ -10,12 +10,11 @@ import socketserver
 
 
 class TCPHandler(socketserver.BaseRequestHandler):
-    """
-    The request handler class for our server.
-
-    It is instantiated once per connection to the server, and must
-    override the handle() method to implement communication to the client.
-    """
+    '''
+    the request handler class for our server. it is instantiated once
+    per connection to the server, and must override the handle() method
+    to implement communication to the client.
+    '''
 
     def parse_msg(self):
         '''self.request is the TCP socket connected to the client'''
@@ -42,7 +41,6 @@ class TCPHandler(socketserver.BaseRequestHandler):
 
     def finish(self):
         '''finish method is always called by the base handler after handle method has completed'''
-
         self.server.logger.debug('closing connection from {}'.format(self.client_address[0]))
 
 

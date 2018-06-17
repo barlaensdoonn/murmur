@@ -1,7 +1,27 @@
 #!/usr/bin/python3
 # murmur - main module for nodes
 # 1/16/18
-# updated: 6/16/18
+# updated: 6/17/18
+
+'''
+there are 4 modules that work together to construct the sequence to run:
+- buttons.py writes the text of the button that is pressed (for example 'start'
+  for the START button) to state.txt. when first launched buttons.py writes 'pause'
+  and then waits for input from the touchscreen.
+- watchdog.py monitors state.txt to check for changes in state. when a state change
+  is registered, it translates that state into a sequence list by referencing its
+  state_map class variable. this sequence list is returned and executed by run()
+  and run_sequence() in this module.
+- timer.py describes and stores the actual sequences and their relative actions,
+  execution order, pauses, etc. it also contains the infrastructure to (relatively)
+  asynchronously execute an action and pause in between actions.
+- control/main.py (this module) uses run() and run_sequence() to get the current
+  sequence to run from the watchdog. if the watchdog registers a new sequence
+  that is not the currently running sequence, we break out of the current sequence
+  and start executing the new one. run_sequence() actually loops over the generator
+  function timer.run() to get events and then sends them to the listening nodes.
+'''
+
 
 import os
 import sys
@@ -68,6 +88,11 @@ def quit():
     sys.exit()
 
 
+def sleep():
+    logger.warning('sleeping for 10 seconds, then trying again')
+    time.sleep(10)
+
+
 def run_sequence(watchdog, sequence_list):
     '''
     we use the Watchdog class variable state_maps to break out of the loop if necessary:
@@ -101,12 +126,11 @@ def run_sequence(watchdog, sequence_list):
 
     except socket.gaierror:
         logger.error('unable to connect to host {}'.format(host))
-        logger.error('sleeping for 1 minute, then trying again')
-        time.sleep(60)
+        sleep()
     except ConnectionRefusedError:
         logger.error('connection refused when trying to send message to host {}'.format(host))
-        logger.error('{} possibly not running its main node program'.format(host))
-        quit()
+        logger.error('{} is down or possibly not running its main node program'.format(host))
+        sleep()
 
 
 def run(watchdog):
@@ -116,9 +140,9 @@ def run(watchdog):
     until 'stop' is received, at which point we run the 'shutdown' sequence.
 
     the Watchdog class has a class variable 'state_maps' that maps the states
-    'start' and 'stop' to sequence lists, which are passed to run_sequence from here.
-    'state_maps' is also used in run_sequence to break out of the currently running sequence
-    if a state change of 'start' or 'stop' is registered
+    'start' and 'stop' to sequence lists, which are passed to run_sequence
+    from here. 'state_maps' is also used in run_sequence to break out of the
+    currently running sequence if a state change of 'start' or 'stop' is registered
     '''
 
     while True:
