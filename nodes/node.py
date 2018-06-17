@@ -93,15 +93,11 @@ class Node(object):
         '''
 
         try:
+            # NOTE: this should be replaced in future iterations. this is a hack
+            # to work around a failed relay, we repurpose F top to use for D low
             string_arm, string_actuator = self._intercept_d_low(action['arm'], action['actuator'])
             arm = self.arms[string_arm]
             actuator = string_actuator
-            print('before intercept')
-            print('arm: {}, actuator: {}'.format(action, actuator))
-
-            # NOTE: this should be replaced in future iterations. this is a hack
-            # to work around a failed relay, we repurpose F top to use for D low
-            arm, actuator = self._intercept_d_low(arm, actuator)
             print('after intercept')
             print('arm: {}, actuator: {}'.format(arm, actuator))
 
