@@ -102,10 +102,9 @@ class Anchorage:
     #
     # for shutdown we need to pause before 'release_top_lows' to wait for block removal
     sequences = {
-        'initialize': ['fire_bottom_tops', 'top_restore', 'bottom_restore', 'close'],
+        'initialize': ['top_restore', 'bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
-        'shutdown': ['top_restore', 'bottom_restore', 'open', 'bottom_collapse',
-                     'top_collapse', 'release_bottom_tops', 'release_top_lows'],
+        'shutdown': ['top_restore', 'bottom_restore', 'open', 'bottom_collapse', 'top_collapse', 'release_top_lows'],
     }
 
     actions = {
@@ -139,16 +138,6 @@ class Anchorage:
             'actuators': ['low'],
             'activate': [False]
         },
-        'fire_bottom_tops': {
-            'order': bottom_arms_cw,
-            'actuators': ['top'],
-            'activate': [True]
-        },
-        'release_bottom_tops': {
-            'order': bottom_arms_ccw,
-            'actuators': ['top'],
-            'activate': [False]
-        },
         'release_top_lows': {
             'order': top_arms_ccw,
             'actuators': ['low'],
@@ -180,14 +169,6 @@ class Anchorage:
         'close': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=600)
-        },
-        'fire_bottom_tops': {
-            'sequence': timedelta(seconds=4),
-            'done': timedelta(seconds=45)
-        },
-        'release_bottom_tops': {
-            'sequence': timedelta(seconds=4),
-            'done': timedelta(seconds=45)
         },
         'release_top_lows': {
             'sequence': timedelta(seconds=4),

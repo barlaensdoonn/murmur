@@ -112,7 +112,7 @@ def run_sequence(watchdog, sequence_list):
 
     once the end of the timer.run(sequence) generator object is reached, we return
     the sequence we just ran unless the sequence is 'initialize' or 'shutdown'.
-    this means currently only 'main_loop' or None is returned from this function
+    this means currently only 'main_loop' or None is returned from this function.
     refer to the NOTE below to see how we achieve this after running 'initialize'.
     '''
 
