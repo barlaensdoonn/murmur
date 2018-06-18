@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - timer module for controlling nodes/arms/actuators
 # 1/16/18
-# updated: 6/16/18
+# updated: 6/18/18
 
 import time
 import logging
@@ -23,27 +23,10 @@ class Mystic:
     arms_A_to_M = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
     arms_M_to_A = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
 
-    pauses = {
-        'low': {
-            'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=10)
-        },
-        'mid-ext_and_top': {
-            'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=120)
-        },
-        'mid-retract_and_top': {
-            'sequence': timedelta(seconds=5),
-            'done': timedelta(seconds=60)
-        },
-        'lowlow': {
-            'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=180)
-        },
-        'release_mid-ext': {
-            'sequence': timedelta(seconds=1),
-            'done': timedelta(seconds=60)
-        }
+    sequences = {
+        'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
+        'main_loop': ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow'],
+        'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
     }
 
     actions = {
@@ -74,10 +57,27 @@ class Mystic:
         }
     }
 
-    sequences = {
-        'initialize': ['low', 'mid-retract_and_top', 'lowlow'],
-        'main_loop': ['low', 'mid-ext_and_top', 'mid-retract_and_top', 'lowlow'],
-        'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
+    pauses = {
+        'low': {
+            'sequence': timedelta(seconds=2),
+            'done': timedelta(seconds=10)
+        },
+        'mid-ext_and_top': {
+            'sequence': timedelta(seconds=5),
+            'done': timedelta(seconds=120)
+        },
+        'mid-retract_and_top': {
+            'sequence': timedelta(seconds=5),
+            'done': timedelta(seconds=60)
+        },
+        'lowlow': {
+            'sequence': timedelta(seconds=2),
+            'done': timedelta(seconds=180)
+        },
+        'release_mid-ext': {
+            'sequence': timedelta(seconds=1),
+            'done': timedelta(seconds=60)
+        }
     }
 
 
@@ -91,6 +91,67 @@ class Anchorage:
     bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
     top_arms_cw = ['B', 'D', 'F', 'H', 'K', 'M']
     top_arms_ccw = ['M', 'K', 'F', 'H', 'D', 'B']  # NOTE: this is a hack to get F out of the way of H on the mid movement
+
+    # TODO: figure out initialize and shutdown sequences
+    # we could potentially delete the 'close' action from the end of 'initialize',
+    # and just pause after 'initialize' finishes until blocks are removed. this
+    # means the first loop would start from the open state, not dome state.
+    # we could instead leave 'close' and pause after 'top_restore' to wait for block removal.
+    # this means that 'top_restore' needs to make sure top lows are fired
+    sequences = {
+        'initialize': ['fire_bottom_tops', 'top_restore', 'bottom_restore', 'close'],
+        'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
+        'shutdown': ['fire_bottom_tops', 'top_restore', 'bottom_restore', 'open',
+                     'bottom_collapse', 'top_collapse', 'release_bottom_tops', 'release_top_lows'],
+    }
+
+    actions = {
+        'open': {
+            'order': all_arms_cw,
+            'actuators': ['low', 'mid-ext'],  # mid-ext is here to ensure it's fired when 'main_loop' is run
+            'activate': [True, True]
+        },
+        'bottom_collapse': {
+            'order': bottom_arms_cw,
+            'actuators': ['low', 'mid-ext', 'mid-retract', 'top'],
+            'activate': [False, False, True, True]
+        },
+        'top_collapse': {
+            'order': top_arms_cw,
+            'actuators': ['mid-ext', 'mid-retract'],
+            'activate': [False, True]
+        },
+        'top_restore': {
+            'order': top_arms_ccw,
+            'actuators': ['low', 'mid-retract', 'mid-ext'],  # low is here to raise top lows to allow for block removal
+            'activate': [True, False, True]
+        },
+        'bottom_restore': {
+            'order': bottom_arms_ccw,
+            'actuators': ['top', 'mid-retract', 'mid-ext', 'low'],
+            'activate': [False, False, True, True]
+        },
+        'close': {
+            'order': all_arms_ccw,
+            'actuators': ['low'],
+            'activate': [False]
+        },
+        'fire_bottom_tops': {
+            'order': bottom_arms_cw,
+            'actuators': ['top'],
+            'activate': [True]
+        },
+        'release_bottom_tops': {
+            'order': bottom_arms_ccw,
+            'actuators': ['top'],
+            'activate': [False]
+        },
+        'release_top_lows': {
+            'order': top_arms_ccw,
+            'actuators': ['low'],
+            'activate': [False]
+        }
+    }
 
     pauses = {
         'open': {
@@ -116,47 +177,19 @@ class Anchorage:
         'close': {
             'sequence': timedelta(seconds=2),
             'done': timedelta(seconds=600)
+        },
+        'fire_bottom_tops': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=45)
+        },
+        'release_bottom_tops': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=45)
+        },
+        'release_top_lows': {
+            'sequence': timedelta(seconds=4),
+            'done': timedelta(seconds=45)
         }
-    }
-
-    actions = {
-        'open': {
-            'order': all_arms_cw,
-            'actuators': ['low', 'mid-ext'],  # mid-ext is here to ensure it's fired when the pingo first starts up
-            'activate': [True, True]
-        },
-        'bottom_collapse': {
-            'order': bottom_arms_cw,
-            'actuators': ['low', 'mid-ext', 'mid-retract', 'top'],
-            'activate': [False, False, True, True]
-        },
-        'top_collapse': {
-            'order': top_arms_cw,
-            'actuators': ['mid-ext', 'mid-retract'],
-            'activate': [False, True]
-        },
-        'top_restore': {
-            'order': top_arms_ccw,
-            'actuators': ['mid-retract', 'mid-ext'],
-            'activate': [False, True]
-        },
-        'bottom_restore': {
-            'order': bottom_arms_ccw,
-            'actuators': ['top', 'mid-retract', 'mid-ext', 'low'],
-            'activate': [False, False, True, True]
-        },
-        'close': {
-            'order': all_arms_ccw,
-            'actuators': ['low'],
-            'activate': [False]
-        }
-    }
-
-    # TODO: figure out initialize and shutdown sequences
-    sequences = {
-        'initialize': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
-        'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
-        # 'shutdown': ['low', 'mid-ext_and_top', 'lowlow', 'release_mid-ext']
     }
 
 
