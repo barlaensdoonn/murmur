@@ -45,6 +45,7 @@ class Watchdog:
         self.state = current
 
     def _pause(self):
+        '''sleep and wait for check_state() method to return a new state'''
         self.logger.info('pausing program...')
 
         while True:
@@ -54,6 +55,7 @@ class Watchdog:
                 time.sleep(0.1)
 
     def _handle_state_change(self, current):
+        '''this method is used to pause the program if 'pause' state is registered'''
         self._register_state_change(current)
 
         if self.state == 'pause':
@@ -64,6 +66,11 @@ class Watchdog:
             pass
 
     def check_state(self):
+        '''
+        if there is a state change, return the state, otherwise return None.
+        _pause() method in particular uses this to break out of sleep loop if
+        something other than None is returned.
+        '''
         current = self._read_state_file()
 
         if current and current != self.state:
