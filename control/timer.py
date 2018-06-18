@@ -93,16 +93,19 @@ class Anchorage:
     top_arms_ccw = ['M', 'K', 'F', 'H', 'D', 'B']  # NOTE: this is a hack to get F out of the way of H on the mid movement
 
     # TODO: figure out initialize and shutdown sequences
+    #
     # we could potentially delete the 'close' action from the end of 'initialize',
     # and just pause after 'initialize' finishes until blocks are removed. this
     # means the first loop would start from the open state, not dome state.
-    # we could instead leave 'close' and pause after 'top_restore' to wait for block removal.
-    # this means that 'top_restore' needs to make sure top lows are fired
+    # we could instead leave 'close' and pause after 'top_restore' to wait for
+    # block removal. this means that 'top_restore' needs to make sure top lows are fired
+    #
+    # for shutdown we need to pause before 'release_top_lows' to wait for block removal
     sequences = {
         'initialize': ['fire_bottom_tops', 'top_restore', 'bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
-        'shutdown': ['fire_bottom_tops', 'top_restore', 'bottom_restore', 'open',
-                     'bottom_collapse', 'top_collapse', 'release_bottom_tops', 'release_top_lows'],
+        'shutdown': ['top_restore', 'bottom_restore', 'open', 'bottom_collapse',
+                     'top_collapse', 'release_bottom_tops', 'release_top_lows'],
     }
 
     actions = {
@@ -123,7 +126,7 @@ class Anchorage:
         },
         'top_restore': {
             'order': top_arms_ccw,
-            'actuators': ['low', 'mid-retract', 'mid-ext'],  # low is here to raise top lows to allow for block removal
+            'actuators': ['low', 'mid-retract', 'mid-ext'],  # low is here to raise top lows during 'initialize' to allow for block removal
             'activate': [True, False, True]
         },
         'bottom_restore': {
