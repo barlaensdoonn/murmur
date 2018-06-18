@@ -231,8 +231,11 @@ class Timer:
 
     def _fire(self, action):
         '''
-        we pause slightly to ensure both mid-valves are never fired at the same time.
-        the pause is located at the NOTE below.
+        we yield None if pause (a datetime.timedelta object) is in the future,
+        otherwise we yield an action. we have to yield None to give the watchdog
+        a chance to concurrently check for state changes while a sequence is running.
+        also if the actuator is a 'mid' we pause 1/10th a second to ensure both
+        mid-valves are never fired at the same time.
         '''
         self.logger.info('firing {}'.format(action))
 
@@ -251,7 +254,7 @@ class Timer:
                         self.logger.debug('yielding action: {}'.format(action_tuple))
                         yield (action_tuple)
 
-                        # NOTE: slight pause to ensure both mid valves are never open simultaneously
+                        # slight pause to ensure both mid valves are never open simultaneously
                         if 'mid' in actuators[i]:
                             time.sleep(0.1)
                     break

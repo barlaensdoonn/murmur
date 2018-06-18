@@ -101,13 +101,17 @@ def sleep():
 
 def run_sequence(watchdog, sequence_list):
     '''
-    we use the Watchdog class variable state_maps to break out of the loop if necessary:
-    if the state is updated and it's one we're interested in (either 'start' or 'stop'),
-    and the current sequence is not in the new state's sequence list in watchdog.state_maps,
-    stop current sequence by returning the sequence list to be run next
+    we use the Watchdog class variable state_maps to break out of the loop
+    if necessary: if the state is updated and it's one we're interested in
+    (either 'start' or 'stop'), and the current sequence is not in the new state's
+    sequence list in watchdog.state_maps, stop current sequence by returning the
+    sequence list to be run next. since 'pause' is not in watchdog's state_maps,
+    we just run watchdog.check_state() until it returns 'start' or 'stop'.
     '''
 
-    # pop 'initialize' off front of copied list so we don't run it again until next time START button is pressed
+    # pop 'initialize' off front of copied list so we don't run it again until
+    # next time START button is pressed. this works because only 'start' sequence
+    # list has more than one element in it.
     safe_list = sequence_list[:]
     sequence = safe_list.pop(0) if len(safe_list) > 1 else safe_list[0]
 
@@ -153,6 +157,8 @@ def run(watchdog):
 
     while True:
         try:
+            # pause at the top of the loop since watchdog._pause() will only run when
+            # a state change is registered, and the program starts in state 'pause'
             logger.info('waiting for input from touchscreen...')
             while watchdog.check_state() not in watchdog.state_map.keys():
                 time.sleep(0.1)
