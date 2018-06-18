@@ -1,9 +1,15 @@
 #!/usr/bin/python3
-# murmur - main module for nodes
+# murmur - main control module
 # 1/16/18
 # updated: 6/17/18
 
 '''
+buttons.py and this main.py run concurrently as separate systemd services:
+murmur_buttons.service
+murmur_control.service
+
+- - - - - - - - - - - - -
+
 there are 4 modules that work together to construct the sequence to run:
 - buttons.py writes the text of the button that is pressed (for example 'start'
   for the START button) to state.txt. when first launched buttons.py writes 'pause'
