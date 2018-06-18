@@ -105,13 +105,20 @@ def run_sequence(watchdog, sequence_list):
     if necessary: if the state is updated and it's one we're interested in
     (either 'start' or 'stop'), and the current sequence is not in the new state's
     sequence list in watchdog.state_maps, stop current sequence by returning the
-    sequence list to be run next. since 'pause' is not in watchdog's state_maps,
-    we just run watchdog.check_state() until it returns 'start' or 'stop'.
+    sequence list to be run next.
+
+    since 'pause' is not in watchdog's state_maps, during 'pause' state we just
+    run watchdog.check_state() until it returns 'start' or 'stop'.
+
+    once the end of the timer.run(sequence) generator object is reached, we return
+    the sequence we just ran unless the sequence is 'initialize' or 'shutdown'.
+    this means currently only 'main_loop' or None is returned from this function
+    refer to the NOTE below to see how we achieve this after running 'initialize'.
     '''
 
-    # pop 'initialize' off front of copied list so we don't run it again until
-    # next time START button is pressed. this works because only 'start' sequence
-    # list has more than one element in it.
+    # NOTE: we pop 'initialize' off front of copied list so we don't run it again
+    # until next time START button is pressed. this works because only 'start'
+    # sequence list has more than one element in it.
     safe_list = sequence_list[:]
     sequence = safe_list.pop(0) if len(safe_list) > 1 else safe_list[0]
 
@@ -119,7 +126,7 @@ def run_sequence(watchdog, sequence_list):
         logger.info("running sequence '{}'".format(sequence))
         for event in timer.run(sequence):
 
-            # NOTE: refer to docstring for explanation of this block
+            # refer to docstring for explanation of this block
             if watchdog.check_state() and watchdog.state in watchdog.state_map.keys():
                 if sequence not in watchdog.state_map[watchdog.state]:
                     logger.info("breaking out of sequence '{}'".format(sequence))
