@@ -259,6 +259,7 @@ class ButtonsLayout(FloatLayout):
             self._flip_disableds()
             if txt == 'STOP':
                 self._reset_pause_text()
+                self.stop_popup.open()
 
 
 class ButtonsApp(App):
