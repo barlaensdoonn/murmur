@@ -32,7 +32,7 @@ def log_press(func):
 class ButtonsLayout(FloatLayout):
 
     state_file = '/home/pi/gitbucket/murmur/control/state.txt'
-    Buttons = namedtuple('Buttons', ['start', 'pause', 'stop', 'exit'])
+    Buttons = namedtuple('Buttons', ['start', 'pause', 'shutdown', 'exit'])
     hosts = ['pi@murmur01.local', 'pi@murmur02.local', 'pi@murmur03.local', 'pi@murmur04.local']
 
     def __init__(self, **kwargs):
@@ -42,8 +42,8 @@ class ButtonsLayout(FloatLayout):
         self.exit_popup = self._setup_exit_popup()
         self.start_popup_content = self._setup_start_popup_content()
         self.start_popup = self._setup_start_popup()
-        self.stop_popup_content = self._setup_stop_popup_content()
-        self.stop_popup = self._setup_stop_popup()
+        self.shutdown_popup_content = self._setup_shutdown_popup_content()
+        self.shutdown_popup = self._setup_shutdown_popup()
         self.button_props = self._setup_buttons()
         self.buttons = self.Buttons(*self._make_buttons())
         self.state = 'pause'
@@ -92,7 +92,7 @@ class ButtonsLayout(FloatLayout):
             }
         }
 
-    def _setup_stop_popup_content(self):
+    def _setup_shutdown_popup_content(self):
         return {
             'button': {
                 'button': Button(text='CONFIRM BLOCKS IN', font_size=35),
@@ -135,20 +135,20 @@ class ButtonsLayout(FloatLayout):
 
         return start_popup
 
-    def _setup_stop_popup(self):
+    def _setup_shutdown_popup(self):
         '''
         according to kivy the popup is a special type of widget, so we just
         instantiate it here and don't need to add it to the layout in ButtonsApp
         '''
         box = BoxLayout(orientation='vertical', padding=5, spacing=10)
-        box.add_widget(self.stop_popup_content['text']['text'])
-        box.add_widget(self.stop_popup_content['button']['button'])
-        self.stop_popup_content['button']['button'].bind(on_press=self.stop_popup_content['button']['on_press'])
+        box.add_widget(self.shutdown_popup_content['text']['text'])
+        box.add_widget(self.shutdown_popup_content['button']['button'])
+        self.shutdown_popup_content['button']['button'].bind(on_press=self.shutdown_popup_content['button']['on_press'])
 
         content = box
-        stop_popup = Popup(title='shutdown', content=content, size_hint=(None, None), size=(600, 260))
+        shutdown_popup = Popup(title='shutdown', content=content, size_hint=(None, None), size=(600, 260))
 
-        return stop_popup
+        return shutdown_popup
 
     def _setup_buttons(self):
         '''
@@ -177,7 +177,7 @@ class ButtonsLayout(FloatLayout):
                 'disabled': True,
                 'on_press': self.pressed
             },
-            'stop': {
+            'shutdown': {
                 'type': Button,
                 'color': [0.88, 0.2, 0.2, 1],
                 'size_hint': size_hint_trio,
@@ -234,7 +234,7 @@ class ButtonsLayout(FloatLayout):
         button.disabled = self.button_props[bttn_txt]['disabled']
 
     def _flip_disableds(self):
-        for key in ['start', 'pause', 'stop']:
+        for key in ['start', 'pause', 'shutdown']:
             key = 'pause' if key == 'resume' else key
             self.button_props[key]['disabled'] = not self.button_props[key]['disabled']
             self._set_disabled(getattr(self.buttons, key))
@@ -287,9 +287,9 @@ class ButtonsLayout(FloatLayout):
             self._change_text(txt)
         else:
             self._flip_disableds()
-            if txt == 'STOP':
+            if txt == 'SHUTDOWN':
                 self._reset_pause_text()
-                self.stop_popup.open()
+                self.shutdown_popup.open()
             elif txt == 'START':
                 self.start_popup.open()
 

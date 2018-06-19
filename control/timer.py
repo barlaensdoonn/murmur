@@ -104,9 +104,11 @@ class Anchorage:
     # to wait for block removal
 
     sequences = {
-        'initialize': ['top_restore', 'bottom_restore', 'close'],
+        'start': ['top_restore'],
+        'intitalize': ['bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
-        'shutdown': ['top_restore', 'bottom_restore', 'bottom_collapse', 'top_collapse', 'release_top_lows', 'release_all_mids'],
+        'shutdown': ['top_restore', 'bottom_restore', 'bottom_collapse', 'top_collapse'],
+        'stop': ['release_top_lows', 'release_all_mids'],
     }
 
     actions = {

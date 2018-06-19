@@ -21,8 +21,10 @@ class Watchdog:
     state_file = os.path.join(get_basepath(), 'state.txt')
 
     state_map = {
-        'start': ['initialize', 'main_loop'],
-        'stop': ['shutdown']
+        'start': ['start'],
+        'confirm blocks out': ['initialize', 'main_loop'],
+        'shutdown': ['shutdown'],
+        'confirm blocks in': ['stop']
     }
 
     def __init__(self):
