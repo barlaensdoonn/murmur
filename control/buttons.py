@@ -37,8 +37,10 @@ class ButtonsLayout(FloatLayout):
     def __init__(self, **kwargs):
         super(ButtonsLayout, self).__init__(**kwargs)
         self.logger = self._initialize_logger()
-        self.popup_buttons = self._setup_popup_buttons()
-        self.popup = self._setup_popup()
+        self.exit_popup_buttons = self._setup_exit_popup_buttons()
+        self.exit_popup = self._setup_exit_popup()
+        self.stop_popup_buttons = self._setup_stop_popup_buttons()
+        self.stop_popup = self._setup_stop_popup()
         self.button_props = self._setup_buttons()
         self.buttons = self.Buttons(*self._make_buttons())
         self.state = 'pause'
@@ -50,10 +52,10 @@ class ButtonsLayout(FloatLayout):
 
         return Logger
 
-    def _setup_popup_buttons(self):
+    def _setup_exit_popup_buttons(self):
         font_size = 20
 
-        popup_buttons = {
+        return {
             'exit': {
                 'button': Button(text='EXIT APP', font_size=font_size),
                 'on_press': self._exit_app
@@ -76,24 +78,47 @@ class ButtonsLayout(FloatLayout):
             },
         }
 
-        return popup_buttons
+    def _setup_stop_popup_buttons(self):
+        return {
+            'confirm': {
+                'button': Button(text='CONFIRM', font_size=35),
+                'on_press': self._exit_app
+            }
+        }
 
-    def _setup_popup(self):
+    def _setup_exit_popup(self):
         '''
         according to kivy the popup is a special type of widget, so we just
         instantiate it here and don't need to add it to the layout in ButtonsApp
         '''
         box = BoxLayout(orientation='vertical', padding=5, spacing=10)
-        for button in self.popup_buttons.keys():
-            box.add_widget(self.popup_buttons[button]['button'])
+        for button in self.exit_popup_buttons.keys():
+            box.add_widget(self.exit_popup_buttons[button]['button'])
 
         content = box
-        popup = Popup(title='touch outside this popup to cancel', content=content, size_hint=(None, None), size=(400, 460))
+        exit_popup = Popup(title='touch outside this popup to cancel', content=content, size_hint=(None, None), size=(400, 460))
 
-        for button in self.popup_buttons.keys():
-            self.popup_buttons[button]['button'].bind(on_press=self.popup_buttons[button]['on_press'])
+        for button in self.exit_popup_buttons.keys():
+            self.exit_popup_buttons[button]['button'].bind(on_press=self.exit_popup_buttons[button]['on_press'])
 
-        return popup
+        return exit_popup
+
+    def _setup_stop_popup(self):
+        '''
+        according to kivy the popup is a special type of widget, so we just
+        instantiate it here and don't need to add it to the layout in ButtonsApp
+        '''
+        box = BoxLayout(orientation='vertical', padding=5, spacing=10)
+        for button in self.stop_popup_buttons.keys():
+            box.add_widget(self.stop_popup_buttons[button]['button'])
+
+        content = box
+        stop_popup = Popup(title='shutdown', content=content, size_hint=(None, None), size=(400, 460))
+
+        for button in self.stop_popup_buttons.keys():
+            self.stop_popup_buttons[button]['button'].bind(on_press=self.stop_popup_buttons[button]['on_press'])
+
+        return stop_popup
 
     def _setup_buttons(self):
         '''
@@ -136,7 +161,7 @@ class ButtonsLayout(FloatLayout):
                 'size_hint': (0.1, 0.1),
                 'pos_hint': {'center_x': 0.1, 'center_y': 0.9},
                 'disabled': False,
-                'on_press': self.popup.open
+                'on_press': self.exit_popup.open
             }
         }
 
