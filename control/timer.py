@@ -100,17 +100,19 @@ class Anchorage:
     # we could instead leave 'close' and pause after 'top_restore' to wait for
     # block removal. this means that 'top_restore' needs to make sure top lows are fired
     #
-    # for shutdown we need to pause before 'release_top_lows' to wait for block removal
+    # for shutdown we need to pause before 'release_top_lows' and 'release_all_mids'
+    # to wait for block removal
+
     sequences = {
         'initialize': ['top_restore', 'bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
-        'shutdown': ['top_restore', 'bottom_restore', 'open', 'bottom_collapse', 'top_collapse', 'release_top_lows'],
+        'shutdown': ['top_restore', 'bottom_restore', 'bottom_collapse', 'top_collapse', 'release_top_lows', 'release_all_mids'],
     }
 
     actions = {
         'open': {
             'order': all_arms_cw,
-            'actuators': ['low', 'mid-ext'],  # mid-ext is here to ensure it's fired when 'main_loop' is run
+            'actuators': ['low', 'mid-ext'],  # mid-ext is here to ensure it's fired when 'main_loop' is first run
             'activate': [True, True]
         },
         'bottom_collapse': {
@@ -142,7 +144,12 @@ class Anchorage:
             'order': top_arms_ccw,
             'actuators': ['low'],
             'activate': [False]
-        }
+        },
+        'release_all_mids': {
+            'order': all_arms_ccw,
+            'actuators': ['mid-retract'],
+            'activate': [False]
+        },
     }
 
     pauses = {
@@ -173,6 +180,10 @@ class Anchorage:
         'release_top_lows': {
             'sequence': timedelta(seconds=4),
             'done': timedelta(seconds=45)
+        },
+        'release_all_mids': {
+            'sequence': timedelta(seconds=1),
+            'done': timedelta(seconds=2)
         }
     }
 
