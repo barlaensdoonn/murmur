@@ -285,13 +285,17 @@ class ButtonsLayout(FloatLayout):
 
         if txt in ['PAUSE', 'RESUME']:
             self._change_text(txt)
-        else:
+        elif txt in ['START', 'SHUTDOWN']:
             self._flip_disableds()
             if txt == 'START':
                 self.start_popup.open()
             elif txt == 'SHUTDOWN':
                 self._reset_pause_text()
                 self.shutdown_popup.open()
+        elif txt == 'CONFIRM BLOCKS OUT':
+            self.start_popup.dismiss()
+        elif txt == 'CONFIRM BLOCKS IN':
+            self.shutdown_popup.dismiss()
 
 
 class ButtonsApp(App):
