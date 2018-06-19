@@ -105,7 +105,7 @@ class Anchorage:
 
     sequences = {
         'start': ['top_restore'],
-        'intitalize': ['bottom_restore', 'close'],
+        'initialize': ['bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
         'shutdown': ['top_restore', 'bottom_restore', 'bottom_collapse', 'top_collapse'],
         'stop': ['release_top_lows', 'release_all_mids'],
