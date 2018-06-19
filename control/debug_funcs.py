@@ -21,24 +21,8 @@ def get_host_by_arm(arm):
             return host
 
 
-def listify(arms):
+def _listify(arms):
     return [arms] if type(arms) is not list else arms
-
-
-def fire(arms, action, pause=0.1):
-    '''
-    arms can be a single arm or a list of arms.
-    action should be tuple formatted as (actuator, activate).
-    interestingly activate can be either True or 'true' since it gets dumped
-    to json when NodeMessage is instantiated.
-    '''
-    arms = listify(arms)
-
-    for arm in arms:
-        msg = NodeMessage(arm, action[0], action[1])
-        host = '{}.local'.format(get_host_by_arm(arm))
-        sender.send_msg(host, msg.msg)
-        time.sleep(pause)
 
 
 def _move_mids(arms, direction=None):
@@ -48,7 +32,7 @@ def _move_mids(arms, direction=None):
 
     actuators = ['mid-retract', 'mid-ext'] if direction is 'raise' else ['mid-ext', 'mid-retract']
     activate = [False, True]
-    arms = listify(arms)
+    arms = _listify(arms)
 
     for arm in arms:
         for action in zip(actuators, activate):
@@ -61,3 +45,19 @@ def raise_mid(arms):
 
 def drop_mid(arms):
     _move_mids(arms, direction='drop')
+
+
+def fire(arms, action, pause=0.1):
+    '''
+    arms can be a single arm or a list of arms.
+    action should be tuple formatted as (actuator, activate).
+    interestingly activate can be either True or 'true' since it gets dumped
+    to json when NodeMessage is instantiated.
+    '''
+    arms = _listify(arms)
+
+    for arm in arms:
+        msg = NodeMessage(arm, action[0], action[1])
+        host = '{}.local'.format(get_host_by_arm(arm))
+        sender.send_msg(host, msg.msg)
+        time.sleep(pause)
