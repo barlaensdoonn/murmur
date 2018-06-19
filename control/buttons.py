@@ -6,6 +6,7 @@
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.logger import Logger
+from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.togglebutton import ToggleButton
@@ -39,7 +40,9 @@ class ButtonsLayout(FloatLayout):
         self.logger = self._initialize_logger()
         self.exit_popup_buttons = self._setup_exit_popup_buttons()
         self.exit_popup = self._setup_exit_popup()
-        self.stop_popup_buttons = self._setup_stop_popup_buttons()
+        self.start_popup_content = self._setup_start_popup_content()
+        self.start_popup = self._setup_start_popup()
+        self.stop_popup_content = self._setup_stop_popup_content()
         self.stop_popup = self._setup_stop_popup()
         self.button_props = self._setup_buttons()
         self.buttons = self.Buttons(*self._make_buttons())
@@ -78,11 +81,25 @@ class ButtonsLayout(FloatLayout):
             },
         }
 
-    def _setup_stop_popup_buttons(self):
+    def _setup_start_popup_content(self):
         return {
-            'confirm': {
-                'button': Button(text='CONFIRM', font_size=35),
+            'button': {
+                'button': Button(text='CONFIRM BLOCKS OUT', font_size=35),
                 'on_press': self._exit_app
+            },
+            'text': {
+                'text': Label(text='confirm once blocks are removed from arms B, D, F, H, K, and M', font_size=20)
+            }
+        }
+
+    def _setup_stop_popup_content(self):
+        return {
+            'button': {
+                'button': Button(text='CONFIRM BLOCKS IN', font_size=35),
+                'on_press': self._exit_app
+            },
+            'text': {
+                'text': Label(text='confirm once blocks are placed in arms B, D, F, H, K, and M', font_size=20)
             }
         }
 
@@ -103,20 +120,33 @@ class ButtonsLayout(FloatLayout):
 
         return exit_popup
 
+    def _setup_start_popup(self):
+        '''
+        according to kivy the popup is a special type of widget, so we just
+        instantiate it here and don't need to add it to the layout in ButtonsApp
+        '''
+        box = BoxLayout(orientation='vertical', padding=5, spacing=10)
+        box.add_widget(self.start_popup_content['text']['text'])
+        box.add_widget(self.start_popup_content['button']['button'])
+        self.start_popup_content['button']['button'].bind(on_press=self.start_popup_content['button']['on_press'])
+
+        content = box
+        start_popup = Popup(title='initialize', content=content, size_hint=(None, None), size=(640, 260))
+
+        return start_popup
+
     def _setup_stop_popup(self):
         '''
         according to kivy the popup is a special type of widget, so we just
         instantiate it here and don't need to add it to the layout in ButtonsApp
         '''
         box = BoxLayout(orientation='vertical', padding=5, spacing=10)
-        for button in self.stop_popup_buttons.keys():
-            box.add_widget(self.stop_popup_buttons[button]['button'])
+        box.add_widget(self.stop_popup_content['text']['text'])
+        box.add_widget(self.stop_popup_content['button']['button'])
+        self.stop_popup_content['button']['button'].bind(on_press=self.stop_popup_content['button']['on_press'])
 
         content = box
-        stop_popup = Popup(title='shutdown', content=content, size_hint=(None, None), size=(400, 460))
-
-        for button in self.stop_popup_buttons.keys():
-            self.stop_popup_buttons[button]['button'].bind(on_press=self.stop_popup_buttons[button]['on_press'])
+        stop_popup = Popup(title='shutdown', content=content, size_hint=(None, None), size=(600, 260))
 
         return stop_popup
 
@@ -260,6 +290,8 @@ class ButtonsLayout(FloatLayout):
             if txt == 'STOP':
                 self._reset_pause_text()
                 self.stop_popup.open()
+            elif txt == 'START':
+                self.start_popup.open()
 
 
 class ButtonsApp(App):
