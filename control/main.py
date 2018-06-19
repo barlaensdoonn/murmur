@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # murmur - main control module
 # 1/16/18
-# updated: 6/18/18
+# updated: 6/19/18
 
 '''
 buttons.py and this main.py run concurrently as separate systemd services:
