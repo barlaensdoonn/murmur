@@ -111,14 +111,13 @@ def run_sequence(watchdog, sequence_list):
     run watchdog.check_state() until it returns 'start' or 'stop'.
 
     once the end of the timer.run(sequence) generator object is reached, we return
-    the sequence we just ran unless the sequence is 'initialize' or 'shutdown'.
-    this means currently only 'main_loop' or None is returned from this function.
+    the sequence we just ran if it was 'main_loop', otherwise we return None.
     refer to the NOTE below to see how we achieve this after running 'initialize'.
     '''
 
     # NOTE: we pop 'initialize' off front of copied list so we don't run it again
-    # until next time START button is pressed. this works because only 'start'
-    # sequence list has more than one element in it.
+    # until next time CONFIRM BLOCKS OUT button is pressed. this works because only
+    # 'confirm_blocks_out' sequence list has more than one element in it.
     safe_list = sequence_list[:]
     sequence = safe_list.pop(0) if len(safe_list) > 1 else safe_list[0]
 
@@ -139,7 +138,7 @@ def run_sequence(watchdog, sequence_list):
                 sender.send_msg(host, msg.msg)
 
         logger.info("done running sequence '{}'".format(sequence))
-        return safe_list if 'shutdown' not in safe_list else None
+        return safe_list if 'main_loop' in safe_list else None
 
     except socket.gaierror:
         logger.error('unable to connect to host {}'.format(host))
