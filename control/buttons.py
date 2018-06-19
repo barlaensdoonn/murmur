@@ -85,7 +85,7 @@ class ButtonsLayout(FloatLayout):
         return {
             'button': {
                 'button': Button(text='CONFIRM BLOCKS OUT', font_size=35),
-                'on_press': self._exit_app
+                'on_press': self.pressed
             },
             'text': {
                 'text': Label(text='confirm once blocks are removed from arms B, D, F, H, K, and M', font_size=20)
@@ -96,7 +96,7 @@ class ButtonsLayout(FloatLayout):
         return {
             'button': {
                 'button': Button(text='CONFIRM BLOCKS IN', font_size=35),
-                'on_press': self._exit_app
+                'on_press': self.pressed
             },
             'text': {
                 'text': Label(text='confirm once blocks are placed in arms B, D, F, H, K, and M', font_size=20)
@@ -287,11 +287,11 @@ class ButtonsLayout(FloatLayout):
             self._change_text(txt)
         else:
             self._flip_disableds()
-            if txt == 'SHUTDOWN':
+            if txt == 'START':
+                self.start_popup.open()
+            elif txt == 'SHUTDOWN':
                 self._reset_pause_text()
                 self.shutdown_popup.open()
-            elif txt == 'START':
-                self.start_popup.open()
 
 
 class ButtonsApp(App):
