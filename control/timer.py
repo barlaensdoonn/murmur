@@ -89,7 +89,7 @@ class Anchorage:
     all_arms_ccw = ['M', 'L', 'K', 'J', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
     bottom_arms_cw = ['A', 'C', 'E', 'G', 'J', 'L']
     bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
-    top_arms_cw = ['B', 'D', 'F', 'H', 'K', 'M']
+    top_arms_cw = ['B', 'D', 'H', 'K', 'F', 'M']  # NOTE: weird order so arms don't conflict
     top_arms_ccw = ['M', 'K', 'F', 'H', 'D', 'B']  # NOTE: this is a hack to get F out of the way of H on the mid movement
 
     # TODO: figure out initialize and shutdown sequences
@@ -105,7 +105,7 @@ class Anchorage:
 
     sequences = {
         'start': ['top_restore'],
-        'intitalize': ['bottom_restore', 'close'],
+        'initialize': ['bottom_restore', 'close'],
         'main_loop': ['open', 'bottom_collapse', 'top_collapse', 'top_restore', 'bottom_restore', 'close'],
         'shutdown': ['top_restore', 'bottom_restore', 'bottom_collapse', 'top_collapse'],
         'stop': ['release_top_lows', 'release_all_mids'],
@@ -157,23 +157,23 @@ class Anchorage:
     pauses = {
         'open': {
             'sequence': timedelta(seconds=2),
-            'done': timedelta(seconds=30)
+            'done': timedelta(seconds=90)
         },
         'bottom_collapse': {
-            'sequence': timedelta(seconds=4),
-            'done': timedelta(seconds=45)
-        },
-        'top_collapse': {
-            'sequence': timedelta(seconds=12),
-            'done': timedelta(seconds=300)
-        },
-        'top_restore': {
             'sequence': timedelta(seconds=8),
             'done': timedelta(seconds=45)
         },
+        'top_collapse': {
+            'sequence': timedelta(seconds=16),
+            'done': timedelta(seconds=300)
+        },
+        'top_restore': {
+            'sequence': timedelta(seconds=12),
+            'done': timedelta(seconds=45)
+        },
         'bottom_restore': {
-            'sequence': timedelta(seconds=4),
-            'done': timedelta(seconds=75)
+            'sequence': timedelta(seconds=8),
+            'done': timedelta(seconds=105)
         },
         'close': {
             'sequence': timedelta(seconds=2),
