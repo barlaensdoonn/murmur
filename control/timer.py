@@ -83,6 +83,14 @@ class Mystic:
 
 class Anchorage:
     '''
+    we could potentially delete the 'close' action from the end of 'initialize',
+    and just pause after 'initialize' finishes until blocks are removed. this
+    means the first loop would start from the open state, not dome state.
+    we could instead leave 'close' and pause after 'top_restore' to wait for
+    block removal. this means that 'top_restore' needs to make sure top lows are fired
+
+    for shutdown we need to pause before 'release_top_lows' and 'release_all_mids'
+    to wait for block removal
     '''
 
     all_arms_cw = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M']
@@ -91,17 +99,6 @@ class Anchorage:
     bottom_arms_ccw = ['L', 'J', 'G', 'E', 'C', 'A']
     top_arms_cw = ['B', 'D', 'H', 'K', 'F', 'M']  # NOTE: weird order so arms don't conflict
     top_arms_ccw = ['M', 'K', 'F', 'H', 'D', 'B']  # NOTE: this is a hack to get F out of the way of H on the mid movement
-
-    # TODO: figure out initialize and shutdown sequences
-    #
-    # we could potentially delete the 'close' action from the end of 'initialize',
-    # and just pause after 'initialize' finishes until blocks are removed. this
-    # means the first loop would start from the open state, not dome state.
-    # we could instead leave 'close' and pause after 'top_restore' to wait for
-    # block removal. this means that 'top_restore' needs to make sure top lows are fired
-    #
-    # for shutdown we need to pause before 'release_top_lows' and 'release_all_mids'
-    # to wait for block removal
 
     sequences = {
         'start': ['top_restore'],
